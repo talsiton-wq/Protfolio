@@ -221,6 +221,7 @@ const BROKERS  = ["IBI","מיטב","פסגות","אקסלנס","Interactive Brok
 const SYMBOLS  = ["VRT","AMD","MRVL","TSLA","BBAI","BMNR","IBIT","MSTR","RGTI","SOFI","MSFT","MU","NVDA","AVGO","PLTR","UBER","USAR"];
 const REFRESH_MS = 5 * 60 * 1000;
 
+const SHEETS_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTDFv7MY08BSiqL9VBxj1jzShVaRY8nud8CkA5HfG_7V4CBN_YRvjWFy3s7L-iei0z2YuDi4Z3HHoSW/pub?output=csv";
 const load = (k,d) => { try { return JSON.parse(localStorage.getItem(k))??d; } catch { return d; }};
 const save = (k,v) => localStorage.setItem(k, JSON.stringify(v));
 
@@ -277,7 +278,7 @@ document.getElementById("posSymbol").addEventListener("change", function() {
 
 // ── Fetch ─────────────────────────────────────────────────────────────────────
 async function fetchQuotes() {
-  const url = load("ptf_url","");
+  const url = load("ptf_url","") || SHEETS_URL;
   if (!url) return;
   document.getElementById("refreshBtn").textContent = "⟳ טוען...";
   try {
@@ -331,7 +332,7 @@ function render() {
   setKpi("kpiGain", (totalGain?tri(totalGain)+" ":"")+fIls(totalGain), clrClass(totalGain));
   document.getElementById("kpiGainPct").textContent = fPct(totalGainP);
   if (usdIls) { document.getElementById("kpiFx").textContent="₪"+usdIls.toFixed(3); document.getElementById("kpiFxSub").textContent="מ-Google Sheets"; }
-  document.getElementById("noUrlWarn").style.display = load("ptf_url","") ? "none" : "";
+  document.getElementById("noUrlWarn").style.display = "none";
 
   // Portfolio list
   const pfl = document.getElementById("portfolioList");
@@ -433,7 +434,7 @@ document.getElementById("addTradeBtn").addEventListener("click",()=>{
 });
 
 // ── Settings ──────────────────────────────────────────────────────────────────
-document.getElementById("urlInput").value = load("ptf_url","");
+document.getElementById("urlInput").value = load("ptf_url","") || SHEETS_URL;
 document.getElementById("saveUrlBtn").addEventListener("click",()=>{
   const v=document.getElementById("urlInput").value.trim();
   save("ptf_url",v);
