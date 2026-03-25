@@ -323,35 +323,50 @@ async function fetchQuotes() {
 // ── Enrich ────────────────────────────────────────────────────────────────────
 function enrich() {
   return positions.map(pos => {
-    const q = quotes.find(q => q.symbol===pos.symbol);
-    const fx = pos.currency==="ILS" ? 1 : usdIls; // null אם אין שער — לא נחשב
-    const price     = q ? q.price : null;
+    const q       = quotes.find(q => q.symbol===pos.symbol);
+    const fx      = pos.currency==="ILS" ? 1 : usdIls; // null כשאין שער
+    const price   = q ? q.price     : null;
     const prevClose = q ? q.prevClose : null;
-    const valueIls  = price!=null && fx!=null ? price*pos.qty*fx : null;
-    const costIls   = fx!=null ? pos.avgPrice*pos.qty*fx : null;
-    const gainIls   = valueIls!=null && costIls!=null ? valueIls-costIls : null;
-    const gainPct   = gainIls!=null && costIls ? gainIls/costIls : null;
-    const dailyIls  = price!=null && prevClose!=null && fx!=null ? (price-prevClose)*pos.qty*fx : null;
-    return Object.assign({},pos,{price,prevClose,valueIls,costIls,gainIls,gainPct,dailyIls});
+
+    // ערכים בדולרים/מטבע מקורי — תמיד זמינים כשיש מחיר
+    const valueNative = price!=null ? price*pos.qty : null;
+    const costNative  = pos.avgPrice*pos.qty;
+    const gainNative  = valueNative!=null ? valueNative-costNative : null;
+    const gainPct     = gainNative!=null && costNative ? gainNative/costNative : null;
+    const dailyNative = price!=null && prevClose!=null ? (price-prevClose)*pos.qty : null;
+
+    // ערכים בשקלים — רק כשיש שער
+    const valueIls  = valueNative!=null && fx!=null ? valueNative*fx : null;
+    const costIls   = fx!=null ? costNative*fx : null;
+    const gainIls   = gainNative!=null && fx!=null ? gainNative*fx : null;
+    const dailyIls  = dailyNative!=null && fx!=null ? dailyNative*fx : null;
+
+    return Object.assign({},pos,{price,prevClose,valueNative,costNative,gainNative,gainPct,dailyNative,valueIls,costIls,gainIls,dailyIls});
   });
 }
 
 // ── Render ────────────────────────────────────────────────────────────────────
 function render() {
   const ep = enrich();
-  const totalValue = ep.reduce((s,p)=>s+(p.valueIls||0),0);
-  const totalCost  = ep.reduce((s,p)=>s+(p.costIls||0),0);
+  const hasIls = usdIls != null;
+
+  // סיכומים — בשקלים אם יש שער, אחרת בדולרים
+  const totalValue = hasIls ? ep.reduce((s,p)=>s+(p.valueIls||0),0) : ep.reduce((s,p)=>s+(p.valueNative||0),0);
+  const totalCost  = hasIls ? ep.reduce((s,p)=>s+(p.costIls||0),0)  : ep.reduce((s,p)=>s+(p.costNative||0),0);
   const totalGain  = totalValue-totalCost;
   const totalGainP = totalCost ? totalGain/totalCost : null;
-  const totalDaily = ep.reduce((s,p)=>s+(p.dailyIls||0),0);
+  const totalDaily = hasIls ? ep.reduce((s,p)=>s+(p.dailyIls||0),0) : ep.reduce((s,p)=>s+(p.dailyNative||0),0);
+
+  const fVal  = n => hasIls ? fIls(n) : fUsd(n);
+  const fGain = (n,pct) => n!=null ? `${tri(n)} ${fVal(Math.abs(n))}${pct!=null?' · '+fPct(pct):''}` : '—';
 
   // KPIs
   const setKpi = (id,val,cls) => { const el=document.getElementById(id); el.textContent=val; el.className="kpi-val"+(cls?" "+cls:""); };
-  setKpi("kpiValue", fIls(totalValue), "");
-  document.getElementById("kpiValueUsd").textContent = fUsd(usdIls ? totalValue/usdIls : null);
-  setKpi("kpiDaily", (totalDaily?tri(totalDaily)+" ":"")+fIls(totalDaily), clrClass(totalDaily));
-  document.getElementById("kpiDailySub").textContent = fUsd(usdIls ? totalDaily/usdIls : null);
-  setKpi("kpiGain", (totalGain?tri(totalGain)+" ":"")+fIls(totalGain), clrClass(totalGain));
+  setKpi("kpiValue", totalValue ? fVal(totalValue) : "—", "");
+  document.getElementById("kpiValueUsd").textContent = hasIls ? fUsd(totalValue/usdIls) : "";
+  setKpi("kpiDaily", totalDaily ? tri(totalDaily)+" "+fVal(Math.abs(totalDaily)) : "—", clrClass(totalDaily));
+  document.getElementById("kpiDailySub").textContent = hasIls ? fUsd(totalDaily/usdIls) : "";
+  setKpi("kpiGain", totalGain ? tri(totalGain)+" "+fVal(Math.abs(totalGain)) : "—", clrClass(totalGain));
   document.getElementById("kpiGainPct").textContent = fPct(totalGainP);
   if (usdIls) { document.getElementById("kpiFx").textContent="₪"+usdIls.toFixed(3); document.getElementById("kpiFxSub").textContent="מ-Google Sheets"; }
   document.getElementById("noUrlWarn").style.display = "none";
@@ -360,22 +375,25 @@ function render() {
   const pfl = document.getElementById("portfolioList");
   if (!ep.length) { pfl.innerHTML='<p class="empty">הוסף פוזיציות בטאב פוזיציות</p>'; }
   else pfl.innerHTML = ep.map(p => {
-    const gc = clrClass(p.gainIls);
-    const priceChg = p.price!=null ? p.price - p.avgPrice : null;
-    const priceChgPct = priceChg!=null && p.avgPrice ? priceChg/p.avgPrice : null;
+    const showVal  = p.valueIls!=null ? fIls(p.valueIls) : p.valueNative!=null ? fUsd(p.valueNative) : "—";
+    const showGain = p.gainIls!=null  ? p.gainIls        : p.gainNative;
+    const gc = clrClass(showGain);
+    const showGainStr = showGain!=null ? `${tri(showGain)} ${p.gainIls!=null?fIls(Math.abs(showGain)):fUsd(Math.abs(showGain))}` : "—";
+    const priceChg = p.price!=null ? p.price-p.avgPrice : null;
     const pc = clrClass(priceChg);
+    const pcColor = pc==='green'?'#3dd68c':pc==='red'?'#ff5c7a':'#4a6278';
     return `<div class="pos-item">
       <div class="pos-left">
         <div class="ticker">${esc(p.symbol)}</div>
         <div class="meta">${p.qty} יח' · קנייה $${fmt2(p.avgPrice)}</div>
         <div class="meta" style="margin-top:3px">
           מחיר: <strong style="color:#f0f4f8">${p.price!=null?'$'+fmt2(p.price):'—'}</strong>
-          ${priceChg!=null?`<span style="color:${pc==='green'?'#3dd68c':pc==='red'?'#ff5c7a':'#4a6278'};margin-right:4px"> ${tri(priceChg)} $${fmt2(Math.abs(priceChg))} (${fPct(priceChgPct)})</span>`:''}
+          ${priceChg!=null?`<span style="color:${pcColor}"> ${tri(priceChg)} $${fmt2(Math.abs(priceChg))} (${fPct(priceChg/p.avgPrice)})</span>`:''}
         </div>
       </div>
       <div class="pos-right">
-        <div class="val ${gc}">${p.valueIls!=null?fIls(p.valueIls):"—"}</div>
-        <div class="pct ${gc}">${p.gainIls!=null?tri(p.gainIls)+" "+fIls(Math.abs(p.gainIls)):"—"}</div>
+        <div class="val ${gc}">${showVal}</div>
+        <div class="pct ${gc}">${showGainStr}</div>
         <div class="pct ${gc}" style="font-size:11px">${fPct(p.gainPct)}</div>
       </div>
     </div>`;
