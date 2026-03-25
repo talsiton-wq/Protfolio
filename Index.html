@@ -324,14 +324,14 @@ async function fetchQuotes() {
 function enrich() {
   return positions.map(pos => {
     const q = quotes.find(q => q.symbol===pos.symbol);
-    const fx = pos.currency==="ILS" ? 1 : (usdIls||1);
+    const fx = pos.currency==="ILS" ? 1 : usdIls; // null אם אין שער — לא נחשב
     const price     = q ? q.price : null;
     const prevClose = q ? q.prevClose : null;
-    const valueIls  = price!=null ? price*pos.qty*fx : null;
-    const costIls   = pos.avgPrice*pos.qty*fx;
-    const gainIls   = valueIls!=null ? valueIls-costIls : null;
-    const gainPct   = gainIls!=null&&costIls ? gainIls/costIls : null;
-    const dailyIls  = price!=null&&prevClose!=null ? (price-prevClose)*pos.qty*fx : null;
+    const valueIls  = price!=null && fx!=null ? price*pos.qty*fx : null;
+    const costIls   = fx!=null ? pos.avgPrice*pos.qty*fx : null;
+    const gainIls   = valueIls!=null && costIls!=null ? valueIls-costIls : null;
+    const gainPct   = gainIls!=null && costIls ? gainIls/costIls : null;
+    const dailyIls  = price!=null && prevClose!=null && fx!=null ? (price-prevClose)*pos.qty*fx : null;
     return Object.assign({},pos,{price,prevClose,valueIls,costIls,gainIls,gainPct,dailyIls});
   });
 }
@@ -340,9 +340,9 @@ function enrich() {
 function render() {
   const ep = enrich();
   const totalValue = ep.reduce((s,p)=>s+(p.valueIls||0),0);
-  const totalCost  = ep.reduce((s,p)=>s+p.costIls,0);
+  const totalCost  = ep.reduce((s,p)=>s+(p.costIls||0),0);
   const totalGain  = totalValue-totalCost;
-  const totalGainP = totalCost ? totalGain/totalCost : 0;
+  const totalGainP = totalCost ? totalGain/totalCost : null;
   const totalDaily = ep.reduce((s,p)=>s+(p.dailyIls||0),0);
 
   // KPIs
