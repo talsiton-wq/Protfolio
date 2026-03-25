@@ -27,25 +27,26 @@ body{background:#0f1923;color:#f0f4f8;font-family:-apple-system,BlinkMacSystemFo
 
 /* ── KPI cards ── */
 .kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
-.kpi{background:#1a2535;border-radius:14px;padding:16px}
-.kpi-label{font-size:11px;color:#7a9bb5;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
-.kpi-val{font-size:22px;font-weight:700;color:#fff}
+.kpi{background:#1a2535;border-radius:14px;padding:16px;min-width:0;overflow:hidden}
+.kpi-label{font-size:11px;color:#7a9bb5;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kpi-val{font-size:clamp(14px,4.5vw,22px);font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kpi-val.green{color:#3dd68c}
 .kpi-val.red{color:#ff5c7a}
-.kpi-sub{font-size:12px;color:#4a6278;margin-top:3px}
+.kpi-sub{font-size:12px;color:#4a6278;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ── Cards ── */
 .card{background:#1a2535;border-radius:14px;padding:18px;margin-bottom:14px}
 .card-title{font-size:15px;font-weight:600;color:#fff;margin-bottom:14px}
 
 /* ── Position rows ── */
-.pos-item{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #1e2d3d}
+.pos-item{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #1e2d3d;gap:8px}
 .pos-item:last-child{border-bottom:none}
-.pos-left .ticker{font-size:17px;font-weight:700;color:#fff}
-.pos-left .meta{font-size:12px;color:#7a9bb5;margin-top:2px}
-.pos-right{text-align:left}
-.pos-right .val{font-size:16px;font-weight:600}
-.pos-right .pct{font-size:12px;margin-top:2px}
+.pos-left{flex:1;min-width:0;overflow:hidden}
+.pos-left .ticker{font-size:17px;font-weight:700;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pos-left .meta{font-size:12px;color:#7a9bb5;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pos-right{flex-shrink:0;text-align:left;max-width:48%}
+.pos-right .val{font-size:clamp(13px,4vw,16px);font-weight:600;white-space:nowrap}
+.pos-right .pct{font-size:12px;margin-top:2px;white-space:nowrap}
 
 /* ── Forms ── */
 .form-group{margin-bottom:14px}
@@ -78,10 +79,19 @@ body{background:#0f1923;color:#f0f4f8;font-family:-apple-system,BlinkMacSystemFo
 /* ── Settings ── */
 .setting-section{margin-bottom:20px}
 .setting-section h3{font-size:13px;color:#7a9bb5;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
-.url-input-row{display:flex;gap:8px}
-.url-input-row input{flex:1;background:#0f1923;border:1px solid #2a3d52;border-radius:10px;padding:12px;color:#f0f4f8;font-size:13px;outline:none;font-family:monospace}
+.url-input-row{display:flex;gap:8px;flex-wrap:wrap}
+.url-input-row input{flex:1;min-width:0;background:#0f1923;border:1px solid #2a3d52;border-radius:10px;padding:12px;color:#f0f4f8;font-size:13px;outline:none;font-family:monospace}
 .url-input-row button{background:#3dd68c;color:#0a1520;border:none;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;white-space:nowrap}
 .connected-msg{color:#3dd68c;font-size:13px;margin-top:10px}
+
+/* ── Mobile responsive ── */
+@media (max-width:380px){
+  .kpi-grid{gap:8px}
+  .kpi{padding:12px}
+  .card{padding:14px}
+  .tab{padding:12px 12px 0}
+  .topbar{padding:14px 14px 8px}
+}
 
 /* ── Modal ── */
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;padding:20px}
@@ -277,14 +287,38 @@ document.getElementById("posSymbol").addEventListener("change", function() {
 });
 
 // ── Fetch ─────────────────────────────────────────────────────────────────────
+async function fetchCsv(targetUrl) {
+  // Try allorigins (returns JSON with contents)
+  try {
+    const res = await fetch("https://api.allorigins.win/get?url="+encodeURIComponent(targetUrl));
+    if (res.ok) {
+      const json = await res.json();
+      if (json.contents && json.contents.trim()) return json.contents;
+    }
+  } catch(e) { console.warn("allorigins failed:", e); }
+  // Fallback: corsproxy.io (returns raw text)
+  try {
+    const res = await fetch("https://corsproxy.io/?"+encodeURIComponent(targetUrl));
+    if (res.ok) {
+      const text = await res.text();
+      if (text && text.trim()) return text;
+    }
+  } catch(e) { console.warn("corsproxy failed:", e); }
+  return null;
+}
+
 async function fetchQuotes() {
   const url = load("ptf_url","") || SHEETS_URL;
   if (!url) return;
   document.getElementById("refreshBtn").textContent = "⟳ טוען...";
+  const text = await fetchCsv(url);
+  if (!text) {
+    document.getElementById("lastUpd").textContent = "⚠️ שגיאה בטעינת מחירים";
+    document.getElementById("refreshBtn").textContent = "⟳ רענן";
+    return;
+  }
   try {
-    const res  = await fetch("https://api.allorigins.win/get?url="+encodeURIComponent(url));
-    const json = await res.json();
-    const rows = json.contents.trim().split("\n").slice(1).map(line => {
+    const rows = text.trim().split("\n").slice(1).map(line => {
       const c = line.split(",");
       return { symbol:(c[0]||"").trim(), price:parseFloat(c[2]), prevClose:parseFloat(c[3]) };
     }).filter(r => r.symbol && !isNaN(r.price));
@@ -294,7 +328,7 @@ async function fetchQuotes() {
     const t = new Date();
     document.getElementById("lastUpd").textContent = "עודכן: "+t.toLocaleTimeString("he-IL",{hour:"2-digit",minute:"2-digit"});
     render();
-  } catch(e) { console.error(e); }
+  } catch(e) { console.error(e); document.getElementById("lastUpd").textContent = "⚠️ שגיאה בעיבוד הנתונים"; }
   document.getElementById("refreshBtn").textContent = "⟳ רענן";
 }
 
