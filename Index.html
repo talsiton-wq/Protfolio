@@ -1,13 +1,9 @@
 <!DOCTYPE html>
-
 <html lang="he" dir="rtl">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Portfolio Tracker</title>
-<script src="https://cdn.jsdelivr.net/npm/react@18.2.0/umd/react.production.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/react-dom@18.2.0/umd/react-dom.production.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.23.2/babel.min.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -20,502 +16,437 @@ input[type=number]{-moz-appearance:textfield}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .fade{animation:fadeIn .2s ease}
+header{background:#0c1524;border-bottom:1px solid #1a2535;position:sticky;top:0;z-index:100}
+.header-inner{max-width:1300px;margin:0 auto;padding:0 20px;height:58px;display:flex;align-items:center;gap:24px}
+.logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
+.logo-icon{font-size:20px;color:#00e5a0}
+.logo-text{font-size:17px;font-weight:700;letter-spacing:-0.5px}
+nav{display:flex;gap:4px;flex:1;flex-wrap:wrap}
+nav button{background:none;border:none;color:#8892a4;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;font-family:inherit}
+nav button.active{background:#162030;color:#00e5a0}
+.header-right{display:flex;align-items:center;gap:12px;margin-right:auto}
+.pulse{color:#00e5a0;font-size:10px;animation:pulse 1s infinite}
+.refresh-btn{background:#162030;border:1px solid #1e2a3a;color:#8892a4;padding:5px 12px;border-radius:8px;cursor:pointer;font-size:13px;font-family:inherit}
+.last-upd{color:#333f52;font-size:12px}
+main{max-width:1300px;margin:0 auto;padding:24px 20px}
+.tab{display:none}.tab.active{display:block}
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+@media(max-width:700px){.kpi-row{grid-template-columns:1fr 1fr}.two-col{grid-template-columns:1fr!important}}
+.kpi{background:#0c1524;border:1px solid #1a2535;border-radius:14px;padding:20px 22px}
+.kpi-label{color:#8892a4;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.kpi-main{font-size:24px;font-weight:700;letter-spacing:-0.5px;margin-bottom:4px}
+.kpi-sub{color:#4a5568;font-size:13px}
+.card{background:#0c1524;border:1px solid #1a2535;border-radius:14px;padding:24px;margin-bottom:20px}
+.card-title{font-size:16px;font-weight:600;display:block;margin-bottom:18px}
+.warn{background:#1a1200;border:1px solid #3a2800;border-radius:12px;padding:14px 20px;margin-bottom:20px;color:#f0a500;font-size:13px}
+table{width:100%;border-collapse:collapse}
+th{padding:9px 14px;text-align:right;color:#4a5568;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #1a2535}
+td{padding:13px 14px;color:#c8d3e0;border-bottom:1px solid #0f1c2e}
+td.sym{font-weight:700;font-size:15px;color:#e8edf5}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.form-row{display:grid;grid-template-columns:140px 1fr;gap:12px;align-items:center;margin-bottom:10px}
+.form-row label{color:#8892a4;font-size:13px;font-weight:500}
+input,select{background:#111d2e;border:1px solid #1e2a3a;border-radius:8px;padding:9px 12px;color:#e8edf5;font-size:14px;outline:none;width:100%;font-family:inherit}
+.btn{background:#00e5a0;color:#080e1a;border:none;border-radius:8px;padding:10px 20px;font-weight:700;font-size:14px;cursor:pointer;width:100%;font-family:inherit;margin-top:6px}
+.btn-sm{background:none;border:1px solid #1e2a3a;color:#4a5568;border-radius:6px;padding:3px 8px;cursor:pointer;font-size:12px;font-family:inherit}
+.pos-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #0f1c2e}
+.trade-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #0f1c2e}
+.side-btns{display:flex;gap:8px}
+.side-btn{flex:1;padding:8px;border-radius:8px;cursor:pointer;font-weight:600;border:1px solid #1e2a3a;background:#111d2e;color:#8892a4;font-family:inherit;font-size:14px}
+.side-btn.buy.active{border-color:#00e5a0;background:#00251a;color:#00e5a0}
+.side-btn.sell.active{border-color:#ff4d6d;background:#250010;color:#ff4d6d}
+.green{color:#00e5a0}.red{color:#ff4d6d}.muted{color:#8892a4}
+.overflow{overflow-x:auto}
+.mono{font-family:monospace}
+.settings-note{color:#8892a4;font-size:13px;margin-bottom:20px;line-height:1.7}
+.url-row{display:flex;gap:10px}
+.url-row input{flex:1;font-family:monospace;font-size:12px}
+.connected{color:#00e5a0;font-size:13px;margin-top:12px}
+.schema-title{font-size:15px;font-weight:600;display:block;margin-bottom:12px;margin-top:32px;padding-top:24px;border-top:1px solid #1a2535}
+.empty{text-align:center;color:#4a5568;padding:40px 0}
 </style>
 </head>
 <body>
-<div id="root"></div>
-<script type="text/babel">
-const { useState, useEffect, useCallback, useMemo } = React;
 
-// ─── Constants ────────────────────────────────────────────────────────────────
-const REFRESH_MS = 5 * 60 * 1000;
-const BROKERS = [“IBI”,“מיטב”,“פסגות”,“אקסלנס”,“Interactive Brokers”,“אחר”];
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <span class="logo-icon">◈</span>
+      <span class="logo-text">Portfolio</span>
+    </div>
+    <nav>
+      <button class="active" data-tab="dashboard">דשבורד</button>
+      <button data-tab="positions">פוזיציות</button>
+      <button data-tab="trades">עסקאות</button>
+      <button data-tab="settings">הגדרות</button>
+    </nav>
+    <div class="header-right">
+      <span id="loadingDot" class="pulse" style="display:none">●</span>
+      <button class="refresh-btn" id="refreshBtn">⟳ רענן</button>
+      <span class="last-upd" id="lastUpd"></span>
+    </div>
+  </div>
+</header>
+
+<main>
+
+  <!-- DASHBOARD -->
+  <div class="tab active fade" id="tab-dashboard">
+    <div class="kpi-row">
+      <div class="kpi"><div class="kpi-label">שווי תיק כולל</div><div class="kpi-main" id="kpiValue">—</div><div class="kpi-sub" id="kpiValueUsd">—</div></div>
+      <div class="kpi"><div class="kpi-label">רווח/הפסד יומי</div><div class="kpi-main" id="kpiDaily">—</div><div class="kpi-sub" id="kpiDailyUsd">—</div></div>
+      <div class="kpi"><div class="kpi-label">רווח/הפסד כולל</div><div class="kpi-main" id="kpiGain">—</div><div class="kpi-sub" id="kpiGainPct">—</div></div>
+      <div class="kpi"><div class="kpi-label">שער USD/ILS</div><div class="kpi-main" id="kpiFx">—</div><div class="kpi-sub" id="kpiFxSub">לא מחובר</div></div>
+    </div>
+    <div class="warn" id="noUrlWarn">⚠ לא מחובר ל-Google Sheets — הגדר URL בטאב <strong>הגדרות</strong> כדי לראות מחירים עדכניים</div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+        <span style="font-size:16px;font-weight:600">פוזיציות</span>
+        <span style="color:#4a5568;font-size:13px" id="posCount">0 ניירות</span>
+      </div>
+      <div class="overflow">
+        <table>
+          <thead><tr>
+            <th>טיקר</th><th>ברוקר</th><th>כמות</th><th>מחיר נוכחי</th>
+            <th>עלות ממוצעת</th><th>שווי ₪</th><th>יומי ₪</th><th>סה"כ רווח</th><th>% רווח</th>
+          </tr></thead>
+          <tbody id="dashTable"><tr><td colspan="9" class="empty">אין פוזיציות — הוסף בטאב פוזיציות</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- POSITIONS -->
+  <div class="tab fade" id="tab-positions">
+    <div class="two-col">
+      <div class="card">
+        <span class="card-title">הוסף / עדכן פוזיציה</span>
+        <div class="form-row"><label>טיקר</label><select id="posSymbol"></select></div>
+        <div class="form-row"><label>ברוקר</label><select id="posBroker"></select></div>
+        <div class="form-row"><label>כמות</label><input type="number" id="posQty" placeholder="100"/></div>
+        <div class="form-row"><label>מחיר קנייה ממוצע</label><input type="number" id="posAvg" placeholder="150.00"/></div>
+        <div class="form-row"><label>מטבע</label>
+          <select id="posCurrency"><option value="USD">USD $</option><option value="ILS">ILS ₪</option></select>
+        </div>
+        <button class="btn" id="addPosBtn">+ הוסף פוזיציה</button>
+      </div>
+      <div class="card">
+        <span class="card-title">פוזיציות קיימות</span>
+        <div id="posList"><p class="empty">אין פוזיציות עדיין</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRADES -->
+  <div class="tab fade" id="tab-trades">
+    <div class="two-col">
+      <div class="card">
+        <span class="card-title">רשום עסקה</span>
+        <div class="form-row"><label>סוג</label>
+          <div class="side-btns">
+            <button class="side-btn buy active" id="sideBuy" data-side="buy">קנייה</button>
+            <button class="side-btn sell" id="sideSell" data-side="sell">מכירה</button>
+          </div>
+        </div>
+        <div class="form-row"><label>טיקר</label><select id="tradeSymbol"></select></div>
+        <div class="form-row"><label>ברוקר</label><select id="tradeBroker"></select></div>
+        <div class="form-row"><label>כמות</label><input type="number" id="tradeQty" placeholder="50"/></div>
+        <div class="form-row"><label>מחיר ביצוע</label><input type="number" id="tradePrice" placeholder="200.00"/></div>
+        <div class="form-row"><label>תאריך</label><input type="date" id="tradeDate"/></div>
+        <button class="btn" id="addTradeBtn">שמור עסקה</button>
+      </div>
+      <div class="card">
+        <span class="card-title">היסטוריית עסקאות</span>
+        <div id="tradeList"><p class="empty">אין עסקאות עדיין</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SETTINGS -->
+  <div class="tab fade" id="tab-settings">
+    <div class="card">
+      <span style="font-size:16px;font-weight:600;display:block;margin-bottom:6px">חיבור Google Sheets</span>
+      <p class="settings-note">
+        פרסם את הגיליון שלך:<br/>
+        <strong style="color:#e8edf5">File → Share → Publish to web → בחר גיליון → CSV → Publish</strong><br/>
+        העתק את ה-URL לכאן:
+      </p>
+      <div class="url-row">
+        <input type="text" id="urlInput" placeholder="https://docs.google.com/spreadsheets/d/..."/>
+        <button class="btn" style="width:auto;margin-top:0" id="saveUrlBtn">שמור</button>
+      </div>
+      <p class="connected" id="connectedMsg" style="display:none"></p>
+
+      <span class="schema-title">מבנה הגיליון הנדרש</span>
+      <p style="color:#8892a4;font-size:13px;margin-bottom:14px;line-height:1.6">שורה 1 = כותרות. הנוסחאות בעמודות C ו-D.</p>
+      <div class="overflow">
+        <table>
+          <thead><tr><th>A: Symbol</th><th>B: Name</th><th>C: Price</th><th>D: PrevClose</th></tr></thead>
+          <tbody>
+            <tr><td>USDILS</td><td style="color:#8892a4">USD/ILS Rate</td><td class="green mono">=GOOGLEFINANCE("CURRENCY:USDILS","price")</td><td class="green mono">=GOOGLEFINANCE("CURRENCY:USDILS","closeyest")</td></tr>
+            <tr><td>NVDA</td><td style="color:#8892a4">NVIDIA</td><td class="green mono">=GOOGLEFINANCE("NVDA","price")</td><td class="green mono">=GOOGLEFINANCE("NVDA","closeyest")</td></tr>
+            <tr><td>TSLA</td><td style="color:#8892a4">Tesla</td><td class="green mono">=GOOGLEFINANCE("TSLA","price")</td><td class="green mono">=GOOGLEFINANCE("TSLA","closeyest")</td></tr>
+            <tr><td style="color:#4a5568">...</td><td style="color:#4a5568">...</td><td style="color:#4a5568">...</td><td style="color:#4a5568">...</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="color:#4a5568;font-size:12px;margin-top:14px">
+        להוספת טיקרים ישראלים: <span class="green mono">=GOOGLEFINANCE("TASE:1159235","price")</span>
+      </p>
+    </div>
+  </div>
+
+</main>
+
+<script>
+const BROKERS = ["IBI","מיטב","פסגות","אקסלנס","Interactive Brokers","אחר"];
 const SYMBOLS = [
-{sym:“VRT”,  name:“Vertiv”},
-{sym:“AMD”,  name:“AMD”},
-{sym:“MRVL”, name:“Marvell”},
-{sym:“TSLA”, name:“Tesla”},
-{sym:“BBAI”, name:“BigBear.ai”},
-{sym:“BMNR”, name:“BitMine”},
-{sym:“IBIT”, name:“iShares Bitcoin ETF”},
-{sym:“MSTR”, name:“MicroStrategy”},
-{sym:“RGTI”, name:“Rigetti”},
-{sym:“SOFI”, name:“SoFi”},
-{sym:“MSFT”, name:“Microsoft”},
-{sym:“MU”,   name:“Micron”},
-{sym:“NVDA”, name:“NVIDIA”},
-{sym:“AVGO”, name:“Broadcom”},
-{sym:“PLTR”, name:“Palantir”},
-{sym:“UBER”, name:“Uber”},
-{sym:“USAR”, name:“USA Rare Earth”},
+  {sym:"VRT",name:"Vertiv"},{sym:"AMD",name:"AMD"},{sym:"MRVL",name:"Marvell"},
+  {sym:"TSLA",name:"Tesla"},{sym:"BBAI",name:"BigBear.ai"},{sym:"BMNR",name:"BitMine"},
+  {sym:"IBIT",name:"iShares Bitcoin ETF"},{sym:"MSTR",name:"MicroStrategy"},
+  {sym:"RGTI",name:"Rigetti"},{sym:"SOFI",name:"SoFi"},{sym:"MSFT",name:"Microsoft"},
+  {sym:"MU",name:"Micron"},{sym:"NVDA",name:"NVIDIA"},{sym:"AVGO",name:"Broadcom"},
+  {sym:"PLTR",name:"Palantir"},{sym:"UBER",name:"Uber"},{sym:"USAR",name:"USA Rare Earth"},
 ];
+const REFRESH_MS = 5 * 60 * 1000;
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-const fmt2 = n => (n == null || isNaN(n)) ? “—” : Math.abs(n).toLocaleString(“he-IL”,{minimumFractionDigits:2,maximumFractionDigits:2});
-const fmt0 = n => (n == null || isNaN(n)) ? “—” : Math.abs(n).toLocaleString(“he-IL”,{minimumFractionDigits:0,maximumFractionDigits:0});
-const fIls = n => (n == null || isNaN(n)) ? “—” : `₪${fmt0(n)}`;
-const fUsd = n => (n == null || isNaN(n)) ? “—” : `$${fmt0(n)}`;
-const fPct = n => (n == null || isNaN(n)) ? “—” : `${n>=0?"+":""}${(n*100).toFixed(2)}%`;
-const clr  = n => (n == null || isNaN(n)) ? “#8892a4” : n >= 0 ? “#00e5a0” : “#ff4d6d”;
-const tri  = n => n >= 0 ? “▲” : “▼”;
+// ── Storage ──────────────────────────────────────────────────────────────────
 const load = (k,d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; }};
 const save = (k,v) => localStorage.setItem(k, JSON.stringify(v));
 
-function parseCSV(text) {
-return text.trim().split(”\n”).slice(1).map(line => {
-const c = line.split(”,”);
-return { symbol:(c[0]||””).trim(), price:parseFloat(c[2]), prevClose:parseFloat(c[3]) };
-}).filter(r => r.symbol && !isNaN(r.price));
+// ── State ────────────────────────────────────────────────────────────────────
+let positions = load("ptf_pos", []);
+let trades    = load("ptf_trd", []);
+let quotes    = [];
+let usdIls    = null;
+let tradeSide = "buy";
+
+// ── Formatters ───────────────────────────────────────────────────────────────
+const fmt2 = n => (n==null||isNaN(n)) ? "—" : Math.abs(n).toLocaleString("he-IL",{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmt0 = n => (n==null||isNaN(n)) ? "—" : Math.abs(n).toLocaleString("he-IL",{minimumFractionDigits:0,maximumFractionDigits:0});
+const fIls = n => (n==null||isNaN(n)) ? "—" : `₪${fmt0(n)}`;
+const fUsd = n => (n==null||isNaN(n)) ? "—" : `$${fmt0(n)}`;
+const fPct = n => (n==null||isNaN(n)) ? "—" : `${n>=0?"+":""}${(n*100).toFixed(2)}%`;
+const clr  = n => (n==null||isNaN(n)) ? "#8892a4" : n>=0 ? "#00e5a0" : "#ff4d6d";
+const tri  = n => n>=0 ? "▲" : "▼";
+const esc  = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+// ── Tabs ─────────────────────────────────────────────────────────────────────
+document.querySelectorAll("nav button").forEach(btn => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    btn.classList.add("active");
+    document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
+  });
+});
+
+// ── Populate selects ─────────────────────────────────────────────────────────
+function populateSelects() {
+  ["posSymbol","tradeSymbol"].forEach(id => {
+    const el = document.getElementById(id);
+    el.innerHTML = SYMBOLS.map(s => `<option value="${s.sym}">${s.sym} — ${s.name}</option>`).join("");
+  });
+  ["posBroker","tradeBroker"].forEach(id => {
+    const el = document.getElementById(id);
+    el.innerHTML = BROKERS.map(b => `<option>${esc(b)}</option>`).join("");
+  });
+  document.getElementById("tradeDate").value = new Date().toISOString().slice(0,10);
 }
 
-// ─── App ──────────────────────────────────────────────────────────────────────
-function App() {
-const [tab,       setTab]       = useState(“dashboard”);
-const [quotes,    setQuotes]    = useState([]);
-const [usdIls,    setUsdIls]    = useState(null);
-const [positions, setPositions] = useState(() => load(“ptf_pos”, []));
-const [trades,    setTrades]    = useState(() => load(“ptf_trd”, []));
-const [loading,   setLoading]   = useState(false);
-const [lastUpd,   setLastUpd]   = useState(null);
-const [sheetsUrl, setSheetsUrl] = useState(() => load(“ptf_url”,””));
-const [urlDraft,  setUrlDraft]  = useState(() => load(“ptf_url”,””));
-
-// ── Fetch ──────────────────────────────────────────────────────────────────
-const fetchQuotes = useCallback(async () => {
-const url = load(“ptf_url”,””);
-if (!url) return;
-setLoading(true);
-try {
-// Use allorigins to bypass CORS
-const proxy = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
-const res = await fetch(proxy);
-const json = await res.json();
-const rows = parseCSV(json.contents);
-const fx = rows.find(r => r.symbol === “USDILS”);
-if (fx) setUsdIls(fx.price);
-setQuotes(rows.filter(r => r.symbol !== “USDILS”));
-setLastUpd(new Date());
-} catch(e) {
-console.error(“Fetch error”, e);
+// ── Fetch quotes ─────────────────────────────────────────────────────────────
+async function fetchQuotes() {
+  const url = load("ptf_url","");
+  if (!url) return;
+  document.getElementById("loadingDot").style.display = "";
+  try {
+    const proxy = "https://api.allorigins.win/get?url=" + encodeURIComponent(url);
+    const res  = await fetch(proxy);
+    const json = await res.json();
+    const rows = json.contents.trim().split("\n").slice(1).map(line => {
+      const c = line.split(",");
+      return { symbol:(c[0]||"").trim(), price:parseFloat(c[2]), prevClose:parseFloat(c[3]) };
+    }).filter(r => r.symbol && !isNaN(r.price));
+    const fx = rows.find(r => r.symbol === "USDILS");
+    if (fx) usdIls = fx.price;
+    quotes = rows.filter(r => r.symbol !== "USDILS");
+    const t = new Date();
+    document.getElementById("lastUpd").textContent = t.toLocaleTimeString("he-IL",{hour:"2-digit",minute:"2-digit"});
+    render();
+  } catch(e) { console.error("Fetch error", e); }
+  document.getElementById("loadingDot").style.display = "none";
 }
-setLoading(false);
-}, []);
 
-useEffect(() => {
+// ── Enrich positions ─────────────────────────────────────────────────────────
+function enrich() {
+  return positions.map(pos => {
+    const q   = quotes.find(q => q.symbol === pos.symbol);
+    const fx  = pos.currency === "ILS" ? 1 : (usdIls || 1);
+    const price     = q ? q.price     : null;
+    const prevClose = q ? q.prevClose  : null;
+    const valueIls  = price != null ? price * pos.qty * fx : null;
+    const costIls   = pos.avgPrice * pos.qty * fx;
+    const gainIls   = valueIls != null ? valueIls - costIls : null;
+    const gainPct   = gainIls != null && costIls ? gainIls / costIls : null;
+    const dailyIls  = price != null && prevClose != null ? (price - prevClose) * pos.qty * fx : null;
+    return Object.assign({}, pos, { price, prevClose, valueIls, costIls, gainIls, gainPct, dailyIls });
+  });
+}
+
+// ── Render ───────────────────────────────────────────────────────────────────
+function render() {
+  const ep = enrich();
+  const totalValue = ep.reduce((s,p) => s + (p.valueIls || 0), 0);
+  const totalCost  = ep.reduce((s,p) => s + p.costIls, 0);
+  const totalGain  = totalValue - totalCost;
+  const totalGainP = totalCost ? totalGain / totalCost : 0;
+  const totalDaily = ep.reduce((s,p) => s + (p.dailyIls || 0), 0);
+
+  // KPIs
+  document.getElementById("kpiValue").textContent    = fIls(totalValue);
+  document.getElementById("kpiValue").style.color    = "#e8edf5";
+  document.getElementById("kpiValueUsd").textContent = fUsd(usdIls ? totalValue/usdIls : null);
+
+  document.getElementById("kpiDaily").textContent    = totalDaily ? tri(totalDaily)+" "+fIls(totalDaily) : fIls(totalDaily);
+  document.getElementById("kpiDaily").style.color    = clr(totalDaily);
+  document.getElementById("kpiDailyUsd").textContent = fUsd(usdIls ? totalDaily/usdIls : null);
+
+  document.getElementById("kpiGain").textContent     = totalGain ? tri(totalGain)+" "+fIls(totalGain) : fIls(totalGain);
+  document.getElementById("kpiGain").style.color     = clr(totalGain);
+  document.getElementById("kpiGainPct").textContent  = fPct(totalGainP);
+
+  if (usdIls) {
+    document.getElementById("kpiFx").textContent     = "₪" + usdIls.toFixed(3);
+    document.getElementById("kpiFxSub").textContent  = "מ-Google Sheets";
+  }
+
+  const hasUrl = !!load("ptf_url","");
+  document.getElementById("noUrlWarn").style.display = hasUrl ? "none" : "";
+  document.getElementById("posCount").textContent = ep.length + " ניירות";
+
+  // Dashboard table
+  const tbody = document.getElementById("dashTable");
+  if (ep.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="9" class="empty">אין פוזיציות — הוסף בטאב פוזיציות</td></tr>';
+  } else {
+    tbody.innerHTML = ep.map(p => `
+      <tr>
+        <td class="sym">${esc(p.symbol)}</td>
+        <td>${esc(p.broker)}</td>
+        <td>${p.qty}</td>
+        <td>${p.price != null ? "$"+fmt2(p.price) : "—"}</td>
+        <td>$${fmt2(p.avgPrice)}</td>
+        <td>${fIls(p.valueIls)}</td>
+        <td style="color:${clr(p.dailyIls)};font-weight:600">${p.dailyIls != null ? tri(p.dailyIls)+" "+fIls(Math.abs(p.dailyIls)) : "—"}</td>
+        <td style="color:${clr(p.gainIls)};font-weight:600">${p.gainIls != null ? tri(p.gainIls)+" "+fIls(Math.abs(p.gainIls)) : "—"}</td>
+        <td style="color:${clr(p.gainPct)};font-weight:600">${fPct(p.gainPct)}</td>
+      </tr>`).join("");
+  }
+
+  // Positions list
+  const posList = document.getElementById("posList");
+  if (positions.length === 0) {
+    posList.innerHTML = '<p class="empty">אין פוזיציות עדיין</p>';
+  } else {
+    posList.innerHTML = positions.map((p,i) => `
+      <div class="pos-row">
+        <div>
+          <span style="font-weight:700;font-size:15px;margin-left:10px">${esc(p.symbol)}</span>
+          <span style="color:#4a5568;font-size:12px">${esc(p.broker)} · ${p.qty} יח׳ · עלות $${fmt2(p.avgPrice)} · ${p.currency}</span>
+        </div>
+        <button class="btn-sm" data-remove="${i}">✕</button>
+      </div>`).join("");
+    posList.querySelectorAll("[data-remove]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        positions = positions.filter((_,idx) => idx !== +btn.dataset.remove);
+        save("ptf_pos", positions);
+        render();
+      });
+    });
+  }
+
+  // Trades list
+  const tradeList = document.getElementById("tradeList");
+  if (trades.length === 0) {
+    tradeList.innerHTML = '<p class="empty">אין עסקאות עדיין</p>';
+  } else {
+    tradeList.innerHTML = trades.map(t => `
+      <div class="trade-row">
+        <span style="font-weight:700;font-size:12px;width:44px;flex-shrink:0;color:${t.side==="buy"?"#00e5a0":"#ff4d6d"}">${t.side==="buy"?"קנייה":"מכירה"}</span>
+        <div style="flex:1">
+          <span style="font-weight:700;margin-left:8px">${esc(t.symbol)}</span>
+          <span style="color:#4a5568;font-size:12px">${t.qty} יח׳ × $${fmt2(t.price)} · ${esc(t.broker)} · ${t.date}</span>
+        </div>
+        <span style="color:#8892a4;font-size:13px">$${fmt0(t.qty*t.price)}</span>
+      </div>`).join("");
+  }
+}
+
+// ── Add position ─────────────────────────────────────────────────────────────
+document.getElementById("addPosBtn").addEventListener("click", () => {
+  const qty = parseFloat(document.getElementById("posQty").value);
+  const avg = parseFloat(document.getElementById("posAvg").value);
+  const sym = document.getElementById("posSymbol").value;
+  const brk = document.getElementById("posBroker").value;
+  const cur = document.getElementById("posCurrency").value;
+  if (!qty || !avg) return;
+  const idx = positions.findIndex(p => p.symbol === sym && p.broker === brk);
+  if (idx >= 0) {
+    const old = positions[idx];
+    const nq  = old.qty + qty;
+    const na  = (old.avgPrice * old.qty + avg * qty) / nq;
+    positions[idx] = Object.assign({}, old, { qty:nq, avgPrice:na });
+  } else {
+    positions.push({ symbol:sym, broker:brk, qty, avgPrice:avg, currency:cur });
+  }
+  save("ptf_pos", positions);
+  document.getElementById("posQty").value = "";
+  document.getElementById("posAvg").value = "";
+  render();
+});
+
+// ── Add trade ────────────────────────────────────────────────────────────────
+document.getElementById("sideBuy").addEventListener("click",  () => { tradeSide="buy";  document.getElementById("sideBuy").classList.add("active");  document.getElementById("sideSell").classList.remove("active"); });
+document.getElementById("sideSell").addEventListener("click", () => { tradeSide="sell"; document.getElementById("sideSell").classList.add("active"); document.getElementById("sideBuy").classList.remove("active"); });
+
+document.getElementById("addTradeBtn").addEventListener("click", () => {
+  const qty   = parseFloat(document.getElementById("tradeQty").value);
+  const price = parseFloat(document.getElementById("tradePrice").value);
+  if (!qty || !price) return;
+  trades.unshift({
+    symbol: document.getElementById("tradeSymbol").value,
+    broker: document.getElementById("tradeBroker").value,
+    side:   tradeSide,
+    qty, price,
+    date:   document.getElementById("tradeDate").value,
+    id:     Date.now()
+  });
+  save("ptf_trd", trades);
+  document.getElementById("tradeQty").value   = "";
+  document.getElementById("tradePrice").value = "";
+  render();
+});
+
+// ── Settings ─────────────────────────────────────────────────────────────────
+const urlInput = document.getElementById("urlInput");
+urlInput.value = load("ptf_url","");
+
+document.getElementById("saveUrlBtn").addEventListener("click", () => {
+  save("ptf_url", urlInput.value.trim());
+  const msg = document.getElementById("connectedMsg");
+  msg.textContent = "✓ נשמר — מעדכן מחירים...";
+  msg.style.display = "";
+  fetchQuotes();
+});
+
+// ── Refresh button ───────────────────────────────────────────────────────────
+document.getElementById("refreshBtn").addEventListener("click", fetchQuotes);
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+populateSelects();
+render();
 fetchQuotes();
-const id = setInterval(fetchQuotes, REFRESH_MS);
-return () => clearInterval(id);
-}, [fetchQuotes]);
-
-// ── Enriched positions ─────────────────────────────────────────────────────
-const enriched = useMemo(() => positions.map(pos => {
-const q   = quotes.find(q => q.symbol === pos.symbol);
-const fx  = pos.currency === “ILS” ? 1 : (usdIls || 1);
-const price     = q?.price;
-const prevClose = q?.prevClose;
-const valueIls  = price != null ? price * pos.qty * fx : null;
-const costIls   = pos.avgPrice * pos.qty * fx;
-const gainIls   = valueIls != null ? valueIls - costIls : null;
-const gainPct   = gainIls != null && costIls ? gainIls / costIls : null;
-const dailyIls  = price != null && prevClose != null ? (price - prevClose) * pos.qty * fx : null;
-const dailyPct  = prevClose && price != null ? (price - prevClose) / prevClose : null;
-return { ...pos, price, prevClose, valueIls, costIls, gainIls, gainPct, dailyIls, dailyPct };
-}), [positions, quotes, usdIls]);
-
-const totalValue = enriched.reduce((s,p) => s + (p.valueIls ?? 0), 0);
-const totalCost  = enriched.reduce((s,p) => s + p.costIls, 0);
-const totalGain  = totalValue - totalCost;
-const totalGainP = totalCost ? totalGain / totalCost : 0;
-const totalDaily = enriched.reduce((s,p) => s + (p.dailyIls ?? 0), 0);
-
-// ── Position actions ───────────────────────────────────────────────────────
-function addPosition(form) {
-const qty = parseFloat(form.qty), avg = parseFloat(form.avgPrice);
-if (!qty || !avg) return;
-const idx = positions.findIndex(p => p.symbol === form.symbol && p.broker === form.broker);
-let updated;
-if (idx >= 0) {
-const old = positions[idx];
-const newQty = old.qty + qty;
-const newAvg = (old.avgPrice * old.qty + avg * qty) / newQty;
-updated = positions.map((p,i) => i === idx ? {...old, qty:newQty, avgPrice:newAvg} : p);
-} else {
-updated = [...positions, {symbol:form.symbol, broker:form.broker, qty, avgPrice:avg, currency:form.currency}];
-}
-setPositions(updated); save(“ptf_pos”, updated);
-}
-function removePosition(i) {
-const updated = positions.filter((_,idx) => idx !== i);
-setPositions(updated); save(“ptf_pos”, updated);
-}
-function addTrade(form) {
-if (!form.qty || !form.price) return;
-const t = {...form, qty:parseFloat(form.qty), price:parseFloat(form.price), id:Date.now()};
-const updated = [t, ...trades];
-setTrades(updated); save(“ptf_trd”, updated);
-}
-function saveUrl() {
-save(“ptf_url”, urlDraft);
-setSheetsUrl(urlDraft);
-fetchQuotes();
-}
-
-// ─────────────────────────────────────────────────────────────────────────
-return (
-<div style={{minHeight:“100vh”, background:”#080e1a”}}>
-{/* Header */}
-<header style={{background:”#0c1524”, borderBottom:“1px solid #1a2535”, position:“sticky”, top:0, zIndex:100}}>
-<div style={{maxWidth:1300, margin:“0 auto”, padding:“0 20px”, height:58, display:“flex”, alignItems:“center”, gap:24}}>
-<div style={{display:“flex”, alignItems:“center”, gap:10, flexShrink:0}}>
-<span style={{fontSize:20, color:”#00e5a0”}}>◈</span>
-<span style={{fontSize:17, fontWeight:700, letterSpacing:”-0.5px”}}>Portfolio</span>
-</div>
-<nav style={{display:“flex”, gap:4, flex:1}}>
-{[[“dashboard”,“דשבורד”],[“positions”,“פוזיציות”],[“trades”,“עסקאות”],[“settings”,“הגדרות”]].map(([id,lbl]) => (
-<button key={id} onClick={() => setTab(id)} style={{
-background: tab===id ? “#162030” : “none”,
-border:“none”, color: tab===id ? “#00e5a0” : “#8892a4”,
-padding:“6px 14px”, borderRadius:8, cursor:“pointer”,
-fontSize:14, fontWeight:500,
-}}>{lbl}</button>
-))}
-</nav>
-<div style={{display:“flex”, alignItems:“center”, gap:12}}>
-{loading && <span style={{color:”#00e5a0”, fontSize:10, animation:“pulse 1s infinite”}}>●</span>}
-<button onClick={fetchQuotes} style={{
-background:”#162030”, border:“1px solid #1e2a3a”, color:”#8892a4”,
-padding:“5px 12px”, borderRadius:8, cursor:“pointer”, fontSize:13,
-}}>⟳ רענן</button>
-{lastUpd && <span style={{color:”#333f52”, fontSize:12}}>
-{lastUpd.toLocaleTimeString(“he-IL”,{hour:“2-digit”,minute:“2-digit”})}
-</span>}
-</div>
-</div>
-</header>
-
-  <main style={{maxWidth:1300, margin:"0 auto", padding:"24px 20px"}}>
-
-    {/* ══ DASHBOARD ══ */}
-    {tab === "dashboard" && <div className="fade">
-      {/* KPI row */}
-      <div style={{display:"grid", gridTemplateColumns:"repeat(4,1fr)", gap:14, marginBottom:20}}>
-        <KpiCard label="שווי תיק כולל" main={fIls(totalValue)} sub={fUsd(usdIls ? totalValue/usdIls : null)} />
-        <KpiCard label="רווח/הפסד יומי"
-          main={(totalDaily ? tri(totalDaily)+" " : "") + fIls(totalDaily)}
-          sub={fUsd(usdIls ? totalDaily/usdIls : null)} val={totalDaily} />
-        <KpiCard label="רווח/הפסד כולל"
-          main={(totalGain ? tri(totalGain)+" " : "") + fIls(totalGain)}
-          sub={fPct(totalGainP)} val={totalGain} />
-        <KpiCard label="שער USD/ILS"
-          main={usdIls ? `₪${usdIls.toFixed(3)}` : "—"}
-          sub={sheetsUrl ? "מ-Google Sheets" : "לא מחובר"} />
-      </div>
-
-      {/* No URL warning */}
-      {!sheetsUrl && (
-        <div style={{background:"#1a1200", border:"1px solid #3a2800", borderRadius:12,
-          padding:"14px 20px", marginBottom:20, color:"#f0a500", fontSize:13}}>
-          ⚠ לא מחובר ל-Google Sheets — הגדר URL בטאב <strong>הגדרות</strong> כדי לראות מחירים עדכניים
-        </div>
-      )}
-
-      {/* Table */}
-      <div style={C.card}>
-        <div style={{display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:18}}>
-          <span style={{fontSize:16, fontWeight:600}}>פוזיציות</span>
-          <span style={{color:"#4a5568", fontSize:13}}>{enriched.length} ניירות</span>
-        </div>
-        <div style={{overflowX:"auto"}}>
-          <table style={{width:"100%", borderCollapse:"collapse"}}>
-            <thead>
-              <tr>
-                {["טיקר","ברוקר","כמות","מחיר נוכחי","עלות ממוצעת","שווי ₪","יומי ₪","סה״כ רווח","% רווח"].map(h => (
-                  <th key={h} style={{padding:"9px 14px", textAlign:"right", color:"#4a5568",
-                    fontSize:11, fontWeight:600, textTransform:"uppercase", letterSpacing:"0.5px",
-                    borderBottom:"1px solid #1a2535"}}>{h}</th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {enriched.length === 0
-                ? <tr><td colSpan={9} style={{textAlign:"center", color:"#4a5568", padding:"40px 0"}}>
-                    אין פוזיציות — הוסף בטאב פוזיציות
-                  </td></tr>
-                : enriched.map((p,i) => (
-                  <tr key={i} style={{borderBottom:"1px solid #0f1c2e"}}>
-                    <td style={{padding:"13px 14px", fontWeight:700, fontSize:15}}>{p.symbol}</td>
-                    <td style={C.td}>{p.broker}</td>
-                    <td style={C.td}>{p.qty}</td>
-                    <td style={C.td}>{p.price != null ? `$${fmt2(p.price)}` : "—"}</td>
-                    <td style={C.td}>${fmt2(p.avgPrice)}</td>
-                    <td style={C.td}>{fIls(p.valueIls)}</td>
-                    <td style={{...C.td, color:clr(p.dailyIls), fontWeight:600}}>
-                      {p.dailyIls != null ? `${tri(p.dailyIls)} ${fIls(Math.abs(p.dailyIls))}` : "—"}
-                    </td>
-                    <td style={{...C.td, color:clr(p.gainIls), fontWeight:600}}>
-                      {p.gainIls != null ? `${tri(p.gainIls)} ${fIls(Math.abs(p.gainIls))}` : "—"}
-                    </td>
-                    <td style={{...C.td, color:clr(p.gainPct), fontWeight:600}}>
-                      {fPct(p.gainPct)}
-                    </td>
-                  </tr>
-                ))
-              }
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </div>}
-
-    {/* ══ POSITIONS ══ */}
-    {tab === "positions" && <div className="fade">
-      <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:20}}>
-        <PosForm symbols={SYMBOLS} brokers={BROKERS} onAdd={addPosition} />
-        <div style={C.card}>
-          <span style={{fontSize:16, fontWeight:600, display:"block", marginBottom:18}}>פוזיציות קיימות</span>
-          {positions.length === 0
-            ? <p style={{color:"#4a5568", textAlign:"center", padding:"32px 0"}}>אין פוזיציות עדיין</p>
-            : positions.map((p,i) => (
-              <div key={i} style={{display:"flex", justifyContent:"space-between", alignItems:"center",
-                padding:"12px 0", borderBottom:"1px solid #0f1c2e"}}>
-                <div>
-                  <span style={{fontWeight:700, fontSize:15, marginLeft:10}}>{p.symbol}</span>
-                  <span style={{color:"#4a5568", fontSize:12}}>
-                    {p.broker} · {p.qty} יח׳ · עלות ${fmt2(p.avgPrice)} · {p.currency}
-                  </span>
-                </div>
-                <button onClick={() => removePosition(i)} style={{
-                  background:"none", border:"1px solid #1e2a3a", color:"#4a5568",
-                  borderRadius:6, padding:"3px 8px", cursor:"pointer", fontSize:12,
-                }}>✕</button>
-              </div>
-            ))
-          }
-        </div>
-      </div>
-    </div>}
-
-    {/* ══ TRADES ══ */}
-    {tab === "trades" && <div className="fade">
-      <div style={{display:"grid", gridTemplateColumns:"1fr 1fr", gap:20}}>
-        <TradeForm symbols={SYMBOLS} brokers={BROKERS} onAdd={addTrade} />
-        <div style={C.card}>
-          <span style={{fontSize:16, fontWeight:600, display:"block", marginBottom:18}}>היסטוריית עסקאות</span>
-          {trades.length === 0
-            ? <p style={{color:"#4a5568", textAlign:"center", padding:"32px 0"}}>אין עסקאות עדיין</p>
-            : trades.map(t => (
-              <div key={t.id} style={{display:"flex", alignItems:"center", gap:12,
-                padding:"12px 0", borderBottom:"1px solid #0f1c2e"}}>
-                <span style={{fontWeight:700, fontSize:12, width:44, flexShrink:0,
-                  color: t.side==="buy" ? "#00e5a0" : "#ff4d6d"}}>
-                  {t.side==="buy" ? "קנייה" : "מכירה"}
-                </span>
-                <div style={{flex:1}}>
-                  <span style={{fontWeight:700, marginLeft:8}}>{t.symbol}</span>
-                  <span style={{color:"#4a5568", fontSize:12}}>
-                    {t.qty} יח׳ × ${fmt2(t.price)} · {t.broker} · {t.date}
-                  </span>
-                </div>
-                <span style={{color:"#8892a4", fontSize:13}}>${fmt0(t.qty * t.price)}</span>
-              </div>
-            ))
-          }
-        </div>
-      </div>
-    </div>}
-
-    {/* ══ SETTINGS ══ */}
-    {tab === "settings" && <div className="fade">
-      <div style={C.card}>
-        <span style={{fontSize:16, fontWeight:600, display:"block", marginBottom:6}}>חיבור Google Sheets</span>
-        <p style={{color:"#8892a4", fontSize:13, marginBottom:20, lineHeight:1.7}}>
-          פרסם את הגיליון שלך:<br/>
-          <strong style={{color:"#e8edf5"}}>File → Share → Publish to web → בחר גיליון → CSV → Publish</strong><br/>
-          העתק את ה-URL לכאן:
-        </p>
-        <div style={{display:"flex", gap:10}}>
-          <input value={urlDraft} onChange={e => setUrlDraft(e.target.value)}
-            placeholder="https://docs.google.com/spreadsheets/d/..."
-            style={{...C.input, flex:1, fontFamily:"monospace", fontSize:12}} />
-          <button onClick={saveUrl} style={C.btn}>שמור</button>
-        </div>
-        {sheetsUrl && <p style={{color:"#00e5a0", fontSize:13, marginTop:12}}>
-          ✓ מחובר{lastUpd ? ` · עדכון אחרון: ${lastUpd.toLocaleTimeString("he-IL")}` : ""}
-        </p>}
-
-        <div style={{marginTop:32, paddingTop:24, borderTop:"1px solid #1a2535"}}>
-          <span style={{fontSize:15, fontWeight:600, display:"block", marginBottom:12}}>מבנה הגיליון הנדרש</span>
-          <p style={{color:"#8892a4", fontSize:13, marginBottom:14, lineHeight:1.6}}>
-            שורה 1 = כותרות. הנוסחאות בעמודות C ו-D.
-          </p>
-          <div style={{overflowX:"auto"}}>
-            <table style={{width:"100%", borderCollapse:"collapse", fontSize:12}}>
-              <thead>
-                <tr>
-                  {["A: Symbol","B: Name","C: Price","D: PrevClose"].map(h => (
-                    <th key={h} style={{padding:"8px 12px", textAlign:"right", color:"#4a5568",
-                      borderBottom:"1px solid #1a2535", fontWeight:600}}>{h}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  ["USDILS","USD/ILS Rate",'=GOOGLEFINANCE("CURRENCY:USDILS","price")', '=GOOGLEFINANCE("CURRENCY:USDILS","closeyest")'],
-                  ["NVDA","NVIDIA",'=GOOGLEFINANCE("NVDA","price")', '=GOOGLEFINANCE("NVDA","closeyest")'],
-                  ["TSLA","Tesla",'=GOOGLEFINANCE("TSLA","price")', '=GOOGLEFINANCE("TSLA","closeyest")'],
-                  ["...","...","...","..."],
-                ].map((row,i) => (
-                  <tr key={i} style={{borderBottom:"1px solid #0f1c2e"}}>
-                    {row.map((cell,j) => (
-                      <td key={j} style={{padding:"9px 12px", color: j===0 ? "#e8edf5" : j>=2 ? "#00e5a0" : "#8892a4",
-                        fontFamily: j>=2 ? "monospace" : "inherit"}}>{cell}</td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <p style={{color:"#4a5568", fontSize:12, marginTop:14}}>
-            להוספת טיקרים ישראלים: <span style={{color:"#00e5a0", fontFamily:"monospace"}}>
-              =GOOGLEFINANCE("TASE:1159235","price")
-            </span>
-          </p>
-        </div>
-      </div>
-    </div>}
-
-  </main>
-</div>
-);
-}
-
-// ─── KPI Card ──────────────────────────────────────────────────────────────────
-function KpiCard({ label, main, sub, val }) {
-return (
-<div style={{background:”#0c1524”, border:“1px solid #1a2535”, borderRadius:14, padding:“20px 22px”}}>
-<div style={{color:”#8892a4”, fontSize:11, fontWeight:600, textTransform:“uppercase”,
-letterSpacing:“0.5px”, marginBottom:10}}>{label}</div>
-<div style={{fontSize:24, fontWeight:700, letterSpacing:”-0.5px”, marginBottom:4,
-color: val != null ? clr(val) : “#e8edf5”}}>{main}</div>
-<div style={{color:”#4a5568”, fontSize:13}}>{sub}</div>
-</div>
-);
-}
-
-// ─── Position Form ────────────────────────────────────────────────────────────
-function PosForm({ symbols, brokers, onAdd }) {
-const [f, setF] = useState({symbol:“VRT”, broker:brokers[0], qty:””, avgPrice:””, currency:“USD”});
-function submit() {
-if (!f.qty || !f.avgPrice) return;
-onAdd(f);
-setF(p => ({...p, qty:””, avgPrice:””}));
-}
-return (
-<div style={C.card}>
-<span style={{fontSize:16, fontWeight:600, display:“block”, marginBottom:18}}>הוסף / עדכן פוזיציה</span>
-<FormRow label="טיקר">
-<select style={C.select} value={f.symbol} onChange={e => setF(p=>({...p,symbol:e.target.value}))}>
-{symbols.map(s => <option key={s.sym} value={s.sym}>{s.sym} — {s.name}</option>)}
-</select>
-</FormRow>
-<FormRow label="ברוקר">
-<select style={C.select} value={f.broker} onChange={e => setF(p=>({...p,broker:e.target.value}))}>
-{brokers.map(b => <option key={b}>{b}</option>)}
-</select>
-</FormRow>
-<FormRow label="כמות">
-<input style={C.input} type=“number” placeholder=“100” value={f.qty}
-onChange={e => setF(p=>({...p,qty:e.target.value}))} />
-</FormRow>
-<FormRow label="מחיר קנייה ממוצע">
-<input style={C.input} type=“number” placeholder=“150.00” value={f.avgPrice}
-onChange={e => setF(p=>({...p,avgPrice:e.target.value}))} />
-</FormRow>
-<FormRow label="מטבע">
-<select style={C.select} value={f.currency} onChange={e => setF(p=>({...p,currency:e.target.value}))}>
-<option value="USD">USD $</option>
-<option value="ILS">ILS ₪</option>
-</select>
-</FormRow>
-<button onClick={submit} style={{...C.btn, marginTop:6}}>+ הוסף פוזיציה</button>
-</div>
-);
-}
-
-// ─── Trade Form ───────────────────────────────────────────────────────────────
-function TradeForm({ symbols, brokers, onAdd }) {
-const today = new Date().toISOString().slice(0,10);
-const [f, setF] = useState({symbol:“VRT”, broker:brokers[0], side:“buy”, qty:””, price:””, date:today});
-function submit() {
-if (!f.qty || !f.price) return;
-onAdd(f);
-setF(p => ({...p, qty:””, price:””}));
-}
-return (
-<div style={C.card}>
-<span style={{fontSize:16, fontWeight:600, display:“block”, marginBottom:18}}>רשום עסקה</span>
-<FormRow label="סוג">
-<div style={{display:“flex”, gap:8}}>
-{[“buy”,“sell”].map(s => (
-<button key={s} onClick={() => setF(p=>({...p,side:s}))} style={{
-flex:1, padding:“8px”, borderRadius:8, cursor:“pointer”, fontWeight:600,
-border: f.side===s ? `1px solid ${s==="buy"?"#00e5a0":"#ff4d6d"}` : “1px solid #1e2a3a”,
-background: f.side===s ? (s===“buy”?”#00251a”:”#250010”) : “#111d2e”,
-color: f.side===s ? (s===“buy”?”#00e5a0”:”#ff4d6d”) : “#8892a4”,
-}}>{s===“buy” ? “קנייה” : “מכירה”}</button>
-))}
-</div>
-</FormRow>
-<FormRow label="טיקר">
-<select style={C.select} value={f.symbol} onChange={e => setF(p=>({...p,symbol:e.target.value}))}>
-{symbols.map(s => <option key={s.sym} value={s.sym}>{s.sym} — {s.name}</option>)}
-</select>
-</FormRow>
-<FormRow label="ברוקר">
-<select style={C.select} value={f.broker} onChange={e => setF(p=>({...p,broker:e.target.value}))}>
-{brokers.map(b => <option key={b}>{b}</option>)}
-</select>
-</FormRow>
-<FormRow label="כמות">
-<input style={C.input} type=“number” placeholder=“50” value={f.qty}
-onChange={e => setF(p=>({...p,qty:e.target.value}))} />
-</FormRow>
-<FormRow label="מחיר ביצוע">
-<input style={C.input} type=“number” placeholder=“200.00” value={f.price}
-onChange={e => setF(p=>({...p,price:e.target.value}))} />
-</FormRow>
-<FormRow label="תאריך">
-<input style={C.input} type=“date” value={f.date}
-onChange={e => setF(p=>({...p,date:e.target.value}))} />
-</FormRow>
-<button onClick={submit} style={{...C.btn, marginTop:6}}>שמור עסקה</button>
-</div>
-);
-}
-
-function FormRow({ label, children }) {
-return (
-<div style={{display:“grid”, gridTemplateColumns:“120px 1fr”, gap:12, alignItems:“center”, marginBottom:10}}>
-<span style={{color:”#8892a4”, fontSize:13, fontWeight:500}}>{label}</span>
-{children}
-</div>
-);
-}
-
-// ─── Shared styles ────────────────────────────────────────────────────────────
-const C = {
-card:   { background:”#0c1524”, border:“1px solid #1a2535”, borderRadius:14, padding:24, marginBottom:20 },
-td:     { padding:“13px 14px”, color:”#c8d3e0” },
-input:  { background:”#111d2e”, border:“1px solid #1e2a3a”, borderRadius:8,
-padding:“9px 12px”, color:”#e8edf5”, fontSize:14, outline:“none”, width:“100%” },
-select: { background:”#111d2e”, border:“1px solid #1e2a3a”, borderRadius:8,
-padding:“9px 12px”, color:”#e8edf5”, fontSize:14, outline:“none”, width:“100%” },
-btn:    { background:”#00e5a0”, color:”#080e1a”, border:“none”, borderRadius:8,
-padding:“10px 20px”, fontWeight:700, fontSize:14, cursor:“pointer”, width:“100%” },
-};
-
-ReactDOM.createRoot(document.getElementById(“root”)).render(<App />);
+setInterval(fetchQuotes, REFRESH_MS);
 </script>
-
 </body>
 </html>
