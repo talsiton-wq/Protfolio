@@ -250,53 +250,66 @@ document.getElementById("posSymbol").addEventListener("change", function() {
 });
 
 // ── Fetch ─────────────────────────────────────────────────────────────────────
+const isCsv = t => t && t.trim().length > 0 && !t.trim().startsWith('<');
+
 async function fetchCsv(targetUrl) {
-  // Try allorigins (returns JSON with contents)
+  // 1. ניסיון ישיר (Google Sheets published supports CORS in some cases)
+  try {
+    const res = await fetch(targetUrl);
+    if (res.ok) { const t = await res.text(); if (isCsv(t)) return t; }
+  } catch(e) {}
+  // 2. allorigins (returns JSON with contents)
   try {
     const res = await fetch("https://api.allorigins.win/get?url="+encodeURIComponent(targetUrl));
     if (res.ok) {
       const json = await res.json();
-      if (json.contents && json.contents.trim()) return json.contents;
+      if (isCsv(json.contents)) return json.contents;
     }
-  } catch(e) { console.warn("allorigins failed:", e); }
-  // Fallback: corsproxy.io (returns raw text)
+  } catch(e) {}
+  // 3. corsproxy.io
   try {
     const res = await fetch("https://corsproxy.io/?"+encodeURIComponent(targetUrl));
-    if (res.ok) {
-      const text = await res.text();
-      if (text && text.trim()) return text;
-    }
-  } catch(e) { console.warn("corsproxy failed:", e); }
+    if (res.ok) { const t = await res.text(); if (isCsv(t)) return t; }
+  } catch(e) {}
+  // 4. codetabs proxy
+  try {
+    const res = await fetch("https://api.codetabs.com/v1/proxy?quest="+encodeURIComponent(targetUrl));
+    if (res.ok) { const t = await res.text(); if (isCsv(t)) return t; }
+  } catch(e) {}
   return null;
 }
 
+const parseCSV = line => {
+  const cols = []; let cur = "", inQ = false;
+  for (const ch of line) {
+    if (ch==='"') { inQ=!inQ; }
+    else if (ch===','&&!inQ) { cols.push(cur); cur=""; }
+    else cur+=ch;
+  }
+  cols.push(cur);
+  return cols;
+};
+
 async function fetchQuotes() {
-  const url = SHEETS_URL;
-  if (!url) return;
   document.getElementById("refreshBtn").textContent = "⟳ טוען...";
-  const text = await fetchCsv(url);
+  const text = await fetchCsv(SHEETS_URL);
   if (!text) {
     document.getElementById("lastUpd").textContent = "⚠️ שגיאה בטעינת מחירים";
     document.getElementById("refreshBtn").textContent = "⟳ רענן";
     return;
   }
   try {
-    const parseCSV = line => {
-      const cols = []; let cur = "", inQ = false;
-      for (const ch of line) {
-        if (ch==='"') { inQ=!inQ; }
-        else if (ch===','&&!inQ) { cols.push(cur); cur=""; }
-        else cur+=ch;
-      }
-      cols.push(cur);
-      return cols;
-    };
     const rows = text.trim().split("\n").slice(1).map(line => {
       const c = parseCSV(line);
       const price = parseFloat((c[2]||"").replace(/,/g,""));
       const prevClose = parseFloat((c[3]||"").replace(/,/g,""));
       return { symbol:(c[0]||"").trim(), price, prevClose };
     }).filter(r => r.symbol && !isNaN(r.price));
+    if (!rows.length) {
+      document.getElementById("lastUpd").textContent = "⚠️ לא נמצאו נתונים בגיליון";
+      document.getElementById("refreshBtn").textContent = "⟳ רענן";
+      return;
+    }
     const fx = rows.find(r => r.symbol==="USDILS");
     if (fx) usdIls = fx.price;
     quotes = rows.filter(r => r.symbol!=="USDILS");
