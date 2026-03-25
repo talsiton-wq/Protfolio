@@ -361,12 +361,17 @@ function render() {
   if (!ep.length) { pfl.innerHTML='<p class="empty">הוסף פוזיציות בטאב פוזיציות</p>'; }
   else pfl.innerHTML = ep.map(p => {
     const gc = clrClass(p.gainIls);
-    const dc = clrClass(p.dailyIls);
+    const priceChg = p.price!=null ? p.price - p.avgPrice : null;
+    const priceChgPct = priceChg!=null && p.avgPrice ? priceChg/p.avgPrice : null;
+    const pc = clrClass(priceChg);
     return `<div class="pos-item">
       <div class="pos-left">
         <div class="ticker">${esc(p.symbol)}</div>
-        <div class="meta">${p.qty} יח' · עלות $${fmt2(p.avgPrice)}</div>
-        <div class="meta" style="margin-top:2px">יומי: <span style="color:${p.dailyIls!=null?(p.dailyIls>=0?'#3dd68c':'#ff5c7a'):'#4a6278'}">${p.dailyIls!=null?tri(p.dailyIls)+" "+fIls(Math.abs(p.dailyIls)):"—"}</span></div>
+        <div class="meta">${p.qty} יח' · קנייה $${fmt2(p.avgPrice)}</div>
+        <div class="meta" style="margin-top:3px">
+          מחיר: <strong style="color:#f0f4f8">${p.price!=null?'$'+fmt2(p.price):'—'}</strong>
+          ${priceChg!=null?`<span style="color:${pc==='green'?'#3dd68c':pc==='red'?'#ff5c7a':'#4a6278'};margin-right:4px"> ${tri(priceChg)} $${fmt2(Math.abs(priceChg))} (${fPct(priceChgPct)})</span>`:''}
+        </div>
       </div>
       <div class="pos-right">
         <div class="val ${gc}">${p.valueIls!=null?fIls(p.valueIls):"—"}</div>
