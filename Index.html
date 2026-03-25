@@ -76,13 +76,6 @@ body{background:#0f1923;color:#f0f4f8;font-family:-apple-system,BlinkMacSystemFo
 .trade-badge.buy{background:#0d3325;color:#3dd68c}
 .trade-badge.sell{background:#3a1020;color:#ff5c7a}
 
-/* ── Settings ── */
-.setting-section{margin-bottom:20px}
-.setting-section h3{font-size:13px;color:#7a9bb5;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
-.url-input-row{display:flex;gap:8px;flex-wrap:wrap}
-.url-input-row input{flex:1;min-width:0;background:#0f1923;border:1px solid #2a3d52;border-radius:10px;padding:12px;color:#f0f4f8;font-size:13px;outline:none;font-family:monospace}
-.url-input-row button{background:#3dd68c;color:#0a1520;border:none;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;white-space:nowrap}
-.connected-msg{color:#3dd68c;font-size:13px;margin-top:10px}
 
 /* ── Mobile responsive ── */
 @media (max-width:380px){
@@ -177,41 +170,11 @@ body{background:#0f1923;color:#f0f4f8;font-family:-apple-system,BlinkMacSystemFo
   </div>
 </div>
 
-<!-- TAB: הגדרות -->
-<div class="tab" id="tab-settings">
-  <div class="card">
-    <div class="setting-section">
-      <h3>חיבור Google Sheets</h3>
-      <p style="color:#7a9bb5;font-size:13px;line-height:1.6;margin-bottom:12px">
-        ב-Google Sheets: <strong style="color:#f0f4f8">File → Share → Publish to web → CSV → Publish</strong><br/>
-        העתק את ה-URL לכאן:
-      </p>
-      <div class="url-input-row">
-        <input type="text" id="urlInput" placeholder="https://docs.google.com/spreadsheets/d/..."/>
-        <button id="saveUrlBtn">שמור</button>
-      </div>
-      <p class="connected-msg" id="connectedMsg" style="display:none"></p>
-    </div>
-
-    <div class="setting-section" style="border-top:1px solid #1e2d3d;padding-top:20px">
-      <h3>מבנה הגיליון</h3>
-      <p style="color:#7a9bb5;font-size:12px;line-height:1.7">
-        <strong style="color:#f0f4f8">עמודה A:</strong> Symbol (NVDA, TSLA וכו')<br/>
-        <strong style="color:#f0f4f8">עמודה B:</strong> שם<br/>
-        <strong style="color:#f0f4f8">עמודה C:</strong> <span style="color:#3dd68c;font-family:monospace">=GOOGLEFINANCE("NVDA","price")</span><br/>
-        <strong style="color:#f0f4f8">עמודה D:</strong> <span style="color:#3dd68c;font-family:monospace">=GOOGLEFINANCE("NVDA","closeyest")</span><br/>
-        <strong style="color:#f0f4f8">שורה USDILS:</strong> <span style="color:#3dd68c;font-family:monospace">=GOOGLEFINANCE("CURRENCY:USDILS","price")</span>
-      </p>
-    </div>
-  </div>
-</div>
-
 <!-- Bottom Nav -->
 <nav class="bottom-nav">
   <button class="nav-btn active" data-tab="portfolio"><span class="icon">💼</span>התיק שלי</button>
   <button class="nav-btn" data-tab="positions"><span class="icon">📈</span>פוזיציות</button>
   <button class="nav-btn" data-tab="trades"><span class="icon">🔄</span>עסקאות</button>
-  <button class="nav-btn" data-tab="settings"><span class="icon">⚙️</span>הגדרות</button>
 </nav>
 
 <!-- Modal: הוספת טיקר חדש -->
@@ -308,7 +271,7 @@ async function fetchCsv(targetUrl) {
 }
 
 async function fetchQuotes() {
-  const url = load("ptf_url","") || SHEETS_URL;
+  const url = SHEETS_URL;
   if (!url) return;
   document.getElementById("refreshBtn").textContent = "⟳ טוען...";
   const text = await fetchCsv(url);
@@ -318,9 +281,21 @@ async function fetchQuotes() {
     return;
   }
   try {
+    const parseCSV = line => {
+      const cols = []; let cur = "", inQ = false;
+      for (const ch of line) {
+        if (ch==='"') { inQ=!inQ; }
+        else if (ch===','&&!inQ) { cols.push(cur); cur=""; }
+        else cur+=ch;
+      }
+      cols.push(cur);
+      return cols;
+    };
     const rows = text.trim().split("\n").slice(1).map(line => {
-      const c = line.split(",");
-      return { symbol:(c[0]||"").trim(), price:parseFloat(c[2]), prevClose:parseFloat(c[3]) };
+      const c = parseCSV(line);
+      const price = parseFloat((c[2]||"").replace(/,/g,""));
+      const prevClose = parseFloat((c[3]||"").replace(/,/g,""));
+      return { symbol:(c[0]||"").trim(), price, prevClose };
     }).filter(r => r.symbol && !isNaN(r.price));
     const fx = rows.find(r => r.symbol==="USDILS");
     if (fx) usdIls = fx.price;
@@ -467,16 +442,6 @@ document.getElementById("addTradeBtn").addEventListener("click",()=>{
   render();
 });
 
-// ── Settings ──────────────────────────────────────────────────────────────────
-document.getElementById("urlInput").value = load("ptf_url","") || SHEETS_URL;
-document.getElementById("saveUrlBtn").addEventListener("click",()=>{
-  const v=document.getElementById("urlInput").value.trim();
-  save("ptf_url",v);
-  const msg=document.getElementById("connectedMsg");
-  msg.textContent="✓ נשמר — מעדכן מחירים...";
-  msg.style.display="";
-  fetchQuotes();
-});
 document.getElementById("refreshBtn").addEventListener("click",fetchQuotes);
 
 // ── Init ──────────────────────────────────────────────────────────────────────
