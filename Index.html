@@ -3,450 +3,452 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Portfolio Tracker</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<title>Portfolio</title>
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{background:#080e1a;color:#e8edf5;font-family:'DM Sans',sans-serif;font-size:14px}
-input::-webkit-outer-spin-button,input::-webkit-inner-spin-button{-webkit-appearance:none}
-input[type=number]{-moz-appearance:textfield}
-::-webkit-scrollbar{width:5px;height:5px}
-::-webkit-scrollbar-track{background:#0c1524}
-::-webkit-scrollbar-thumb{background:#1e2a3a;border-radius:3px}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-.fade{animation:fadeIn .2s ease}
-header{background:#0c1524;border-bottom:1px solid #1a2535;position:sticky;top:0;z-index:100}
-.header-inner{max-width:1300px;margin:0 auto;padding:0 20px;height:58px;display:flex;align-items:center;gap:24px}
-.logo{display:flex;align-items:center;gap:10px;flex-shrink:0}
-.logo-icon{font-size:20px;color:#00e5a0}
-.logo-text{font-size:17px;font-weight:700;letter-spacing:-0.5px}
-nav{display:flex;gap:4px;flex:1;flex-wrap:wrap}
-nav button{background:none;border:none;color:#8892a4;padding:6px 14px;border-radius:8px;cursor:pointer;font-size:14px;font-weight:500;font-family:inherit}
-nav button.active{background:#162030;color:#00e5a0}
-.header-right{display:flex;align-items:center;gap:12px;margin-right:auto}
-.pulse{color:#00e5a0;font-size:10px;animation:pulse 1s infinite}
-.refresh-btn{background:#162030;border:1px solid #1e2a3a;color:#8892a4;padding:5px 12px;border-radius:8px;cursor:pointer;font-size:13px;font-family:inherit}
-.last-upd{color:#333f52;font-size:12px}
-main{max-width:1300px;margin:0 auto;padding:24px 20px}
-.tab{display:none}.tab.active{display:block}
-.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
-@media(max-width:700px){.kpi-row{grid-template-columns:1fr 1fr}.two-col{grid-template-columns:1fr!important}}
-.kpi{background:#0c1524;border:1px solid #1a2535;border-radius:14px;padding:20px 22px}
-.kpi-label{color:#8892a4;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
-.kpi-main{font-size:24px;font-weight:700;letter-spacing:-0.5px;margin-bottom:4px}
-.kpi-sub{color:#4a5568;font-size:13px}
-.card{background:#0c1524;border:1px solid #1a2535;border-radius:14px;padding:24px;margin-bottom:20px}
-.card-title{font-size:16px;font-weight:600;display:block;margin-bottom:18px}
-.warn{background:#1a1200;border:1px solid #3a2800;border-radius:12px;padding:14px 20px;margin-bottom:20px;color:#f0a500;font-size:13px}
-table{width:100%;border-collapse:collapse}
-th{padding:9px 14px;text-align:right;color:#4a5568;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.5px;border-bottom:1px solid #1a2535}
-td{padding:13px 14px;color:#c8d3e0;border-bottom:1px solid #0f1c2e}
-td.sym{font-weight:700;font-size:15px;color:#e8edf5}
-.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.form-row{display:grid;grid-template-columns:140px 1fr;gap:12px;align-items:center;margin-bottom:10px}
-.form-row label{color:#8892a4;font-size:13px;font-weight:500}
-input,select{background:#111d2e;border:1px solid #1e2a3a;border-radius:8px;padding:9px 12px;color:#e8edf5;font-size:14px;outline:none;width:100%;font-family:inherit}
-.btn{background:#00e5a0;color:#080e1a;border:none;border-radius:8px;padding:10px 20px;font-weight:700;font-size:14px;cursor:pointer;width:100%;font-family:inherit;margin-top:6px}
-.btn-sm{background:none;border:1px solid #1e2a3a;color:#4a5568;border-radius:6px;padding:3px 8px;cursor:pointer;font-size:12px;font-family:inherit}
-.pos-row{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid #0f1c2e}
-.trade-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #0f1c2e}
-.side-btns{display:flex;gap:8px}
-.side-btn{flex:1;padding:8px;border-radius:8px;cursor:pointer;font-weight:600;border:1px solid #1e2a3a;background:#111d2e;color:#8892a4;font-family:inherit;font-size:14px}
-.side-btn.buy.active{border-color:#00e5a0;background:#00251a;color:#00e5a0}
-.side-btn.sell.active{border-color:#ff4d6d;background:#250010;color:#ff4d6d}
-.green{color:#00e5a0}.red{color:#ff4d6d}.muted{color:#8892a4}
-.overflow{overflow-x:auto}
-.mono{font-family:monospace}
-.settings-note{color:#8892a4;font-size:13px;margin-bottom:20px;line-height:1.7}
-.url-row{display:flex;gap:10px}
-.url-row input{flex:1;font-family:monospace;font-size:12px}
-.connected{color:#00e5a0;font-size:13px;margin-top:12px}
-.schema-title{font-size:15px;font-weight:600;display:block;margin-bottom:12px;margin-top:32px;padding-top:24px;border-top:1px solid #1a2535}
-.empty{text-align:center;color:#4a5568;padding:40px 0}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0f1923;color:#f0f4f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:15px;min-height:100vh;padding-bottom:80px}
+
+/* ── Header ── */
+.topbar{background:#0f1923;padding:18px 20px 10px;border-bottom:1px solid #1e2d3d}
+.topbar h1{font-size:20px;font-weight:700;color:#fff}
+.topbar-row{display:flex;justify-content:space-between;align-items:center}
+.refresh-btn{background:#1e2d3d;border:none;color:#7a9bb5;padding:6px 14px;border-radius:20px;font-size:13px;cursor:pointer}
+.last-upd{color:#4a6278;font-size:12px;margin-top:4px}
+
+/* ── Bottom nav ── */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#0a1520;border-top:1px solid #1e2d3d;display:flex;z-index:100}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 4px 12px;background:none;border:none;color:#4a6278;cursor:pointer;font-size:11px;gap:4px}
+.nav-btn .icon{font-size:22px}
+.nav-btn.active{color:#3dd68c}
+
+/* ── Tabs ── */
+.tab{display:none;padding:16px 16px 0}
+.tab.active{display:block}
+
+/* ── KPI cards ── */
+.kpi-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.kpi{background:#1a2535;border-radius:14px;padding:16px}
+.kpi-label{font-size:11px;color:#7a9bb5;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px}
+.kpi-val{font-size:22px;font-weight:700;color:#fff}
+.kpi-val.green{color:#3dd68c}
+.kpi-val.red{color:#ff5c7a}
+.kpi-sub{font-size:12px;color:#4a6278;margin-top:3px}
+
+/* ── Cards ── */
+.card{background:#1a2535;border-radius:14px;padding:18px;margin-bottom:14px}
+.card-title{font-size:15px;font-weight:600;color:#fff;margin-bottom:14px}
+
+/* ── Position rows ── */
+.pos-item{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid #1e2d3d}
+.pos-item:last-child{border-bottom:none}
+.pos-left .ticker{font-size:17px;font-weight:700;color:#fff}
+.pos-left .meta{font-size:12px;color:#7a9bb5;margin-top:2px}
+.pos-right{text-align:left}
+.pos-right .val{font-size:16px;font-weight:600}
+.pos-right .pct{font-size:12px;margin-top:2px}
+
+/* ── Forms ── */
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:13px;color:#7a9bb5;margin-bottom:6px}
+.form-group input,.form-group select{width:100%;background:#0f1923;border:1px solid #2a3d52;border-radius:10px;padding:12px 14px;color:#f0f4f8;font-size:15px;outline:none}
+.form-group select option{background:#1a2535}
+.btn-green{width:100%;background:#3dd68c;color:#0a1520;border:none;border-radius:12px;padding:14px;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px}
+.btn-red{background:#ff5c7a;color:#fff}
+.btn-outline{background:none;border:1px solid #2a3d52;color:#7a9bb5;border-radius:8px;padding:4px 10px;font-size:12px;cursor:pointer}
+
+/* ── Side toggle ── */
+.side-toggle{display:flex;background:#0f1923;border-radius:10px;padding:4px;gap:4px;margin-bottom:14px}
+.side-toggle button{flex:1;padding:10px;border:none;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;background:none;color:#7a9bb5}
+.side-toggle button.buy.active{background:#0d3325;color:#3dd68c}
+.side-toggle button.sell.active{background:#3a1020;color:#ff5c7a}
+
+/* ── Warn ── */
+.warn{background:#2a1f00;border:1px solid #5a4000;border-radius:12px;padding:14px;margin-bottom:14px;color:#f0a500;font-size:13px;line-height:1.5}
+
+/* ── Empty ── */
+.empty{text-align:center;color:#4a6278;padding:32px 0;font-size:14px}
+
+/* ── Trade row ── */
+.trade-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #1e2d3d}
+.trade-item:last-child{border-bottom:none}
+.trade-badge{font-size:11px;font-weight:700;padding:3px 8px;border-radius:6px;flex-shrink:0}
+.trade-badge.buy{background:#0d3325;color:#3dd68c}
+.trade-badge.sell{background:#3a1020;color:#ff5c7a}
+
+/* ── Settings ── */
+.setting-section{margin-bottom:20px}
+.setting-section h3{font-size:13px;color:#7a9bb5;text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.url-input-row{display:flex;gap:8px}
+.url-input-row input{flex:1;background:#0f1923;border:1px solid #2a3d52;border-radius:10px;padding:12px;color:#f0f4f8;font-size:13px;outline:none;font-family:monospace}
+.url-input-row button{background:#3dd68c;color:#0a1520;border:none;border-radius:10px;padding:12px 18px;font-weight:700;cursor:pointer;white-space:nowrap}
+.connected-msg{color:#3dd68c;font-size:13px;margin-top:10px}
+
+/* ── Modal ── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal-bg.open{display:flex}
+.modal{background:#1a2535;border-radius:16px;padding:24px;width:100%;max-width:380px}
+.modal h3{font-size:17px;font-weight:700;margin-bottom:10px;color:#fff}
+.modal p{color:#7a9bb5;font-size:14px;line-height:1.6;margin-bottom:20px}
+.modal-btns{display:flex;gap:10px}
+.modal-btns button{flex:1;padding:12px;border-radius:10px;border:none;font-size:14px;font-weight:600;cursor:pointer}
+.modal-btns .primary{background:#3dd68c;color:#0a1520}
+.modal-btns .secondary{background:#1e2d3d;color:#7a9bb5}
 </style>
 </head>
 <body>
 
-<header>
-  <div class="header-inner">
-    <div class="logo">
-      <span class="logo-icon">◈</span>
-      <span class="logo-text">Portfolio</span>
-    </div>
-    <nav>
-      <button class="active" data-tab="dashboard">דשבורד</button>
-      <button data-tab="positions">פוזיציות</button>
-      <button data-tab="trades">עסקאות</button>
-      <button data-tab="settings">הגדרות</button>
-    </nav>
-    <div class="header-right">
-      <span id="loadingDot" class="pulse" style="display:none">●</span>
-      <button class="refresh-btn" id="refreshBtn">⟳ רענן</button>
-      <span class="last-upd" id="lastUpd"></span>
-    </div>
+<div class="topbar">
+  <div class="topbar-row">
+    <h1>📊 Portfolio</h1>
+    <button class="refresh-btn" id="refreshBtn">⟳ רענן</button>
   </div>
-</header>
+  <div class="last-upd" id="lastUpd"></div>
+</div>
 
-<main>
-
-  <!-- DASHBOARD -->
-  <div class="tab active fade" id="tab-dashboard">
-    <div class="kpi-row">
-      <div class="kpi"><div class="kpi-label">שווי תיק כולל</div><div class="kpi-main" id="kpiValue">—</div><div class="kpi-sub" id="kpiValueUsd">—</div></div>
-      <div class="kpi"><div class="kpi-label">רווח/הפסד יומי</div><div class="kpi-main" id="kpiDaily">—</div><div class="kpi-sub" id="kpiDailyUsd">—</div></div>
-      <div class="kpi"><div class="kpi-label">רווח/הפסד כולל</div><div class="kpi-main" id="kpiGain">—</div><div class="kpi-sub" id="kpiGainPct">—</div></div>
-      <div class="kpi"><div class="kpi-label">שער USD/ILS</div><div class="kpi-main" id="kpiFx">—</div><div class="kpi-sub" id="kpiFxSub">לא מחובר</div></div>
-    </div>
-    <div class="warn" id="noUrlWarn">⚠ לא מחובר ל-Google Sheets — הגדר URL בטאב <strong>הגדרות</strong> כדי לראות מחירים עדכניים</div>
-    <div class="card">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
-        <span style="font-size:16px;font-weight:600">פוזיציות</span>
-        <span style="color:#4a5568;font-size:13px" id="posCount">0 ניירות</span>
-      </div>
-      <div class="overflow">
-        <table>
-          <thead><tr>
-            <th>טיקר</th><th>ברוקר</th><th>כמות</th><th>מחיר נוכחי</th>
-            <th>עלות ממוצעת</th><th>שווי ₪</th><th>יומי ₪</th><th>סה"כ רווח</th><th>% רווח</th>
-          </tr></thead>
-          <tbody id="dashTable"><tr><td colspan="9" class="empty">אין פוזיציות — הוסף בטאב פוזיציות</td></tr></tbody>
-        </table>
-      </div>
-    </div>
+<!-- TAB: התיק שלי -->
+<div class="tab active" id="tab-portfolio">
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-label">שווי כולל</div><div class="kpi-val" id="kpiValue">—</div><div class="kpi-sub" id="kpiValueUsd"></div></div>
+    <div class="kpi"><div class="kpi-label">רווח יומי</div><div class="kpi-val" id="kpiDaily">—</div><div class="kpi-sub" id="kpiDailySub"></div></div>
+    <div class="kpi"><div class="kpi-label">רווח כולל</div><div class="kpi-val" id="kpiGain">—</div><div class="kpi-sub" id="kpiGainPct"></div></div>
+    <div class="kpi"><div class="kpi-label">USD/ILS</div><div class="kpi-val" id="kpiFx">—</div><div class="kpi-sub" id="kpiFxSub">לא מחובר</div></div>
   </div>
-
-  <!-- POSITIONS -->
-  <div class="tab fade" id="tab-positions">
-    <div class="two-col">
-      <div class="card">
-        <span class="card-title">הוסף / עדכן פוזיציה</span>
-        <div class="form-row"><label>טיקר</label><select id="posSymbol"></select></div>
-        <div class="form-row"><label>ברוקר</label><select id="posBroker"></select></div>
-        <div class="form-row"><label>כמות</label><input type="number" id="posQty" placeholder="100"/></div>
-        <div class="form-row"><label>מחיר קנייה ממוצע</label><input type="number" id="posAvg" placeholder="150.00"/></div>
-        <div class="form-row"><label>מטבע</label>
-          <select id="posCurrency"><option value="USD">USD $</option><option value="ILS">ILS ₪</option></select>
-        </div>
-        <button class="btn" id="addPosBtn">+ הוסף פוזיציה</button>
-      </div>
-      <div class="card">
-        <span class="card-title">פוזיציות קיימות</span>
-        <div id="posList"><p class="empty">אין פוזיציות עדיין</p></div>
-      </div>
-    </div>
+  <div id="noUrlWarn" class="warn">⚠️ לא מחובר ל-Google Sheets — הגדר URL בהגדרות כדי לראות מחירים</div>
+  <div class="card">
+    <div class="card-title">פוזיציות פעילות</div>
+    <div id="portfolioList"><p class="empty">אין פוזיציות עדיין</p></div>
   </div>
+</div>
 
-  <!-- TRADES -->
-  <div class="tab fade" id="tab-trades">
-    <div class="two-col">
-      <div class="card">
-        <span class="card-title">רשום עסקה</span>
-        <div class="form-row"><label>סוג</label>
-          <div class="side-btns">
-            <button class="side-btn buy active" id="sideBuy" data-side="buy">קנייה</button>
-            <button class="side-btn sell" id="sideSell" data-side="sell">מכירה</button>
-          </div>
-        </div>
-        <div class="form-row"><label>טיקר</label><select id="tradeSymbol"></select></div>
-        <div class="form-row"><label>ברוקר</label><select id="tradeBroker"></select></div>
-        <div class="form-row"><label>כמות</label><input type="number" id="tradeQty" placeholder="50"/></div>
-        <div class="form-row"><label>מחיר ביצוע</label><input type="number" id="tradePrice" placeholder="200.00"/></div>
-        <div class="form-row"><label>תאריך</label><input type="date" id="tradeDate"/></div>
-        <button class="btn" id="addTradeBtn">שמור עסקה</button>
-      </div>
-      <div class="card">
-        <span class="card-title">היסטוריית עסקאות</span>
-        <div id="tradeList"><p class="empty">אין עסקאות עדיין</p></div>
-      </div>
+<!-- TAB: פוזיציות -->
+<div class="tab" id="tab-positions">
+  <div class="card">
+    <div class="card-title">הוסף פוזיציה</div>
+    <div class="form-group">
+      <label>טיקר</label>
+      <select id="posSymbol"></select>
     </div>
+    <div class="form-group" id="customSymbolGroup" style="display:none">
+      <label>טיקר מותאם אישית</label>
+      <input type="text" id="customSymbol" placeholder="לדוגמה: AAPL" style="text-transform:uppercase"/>
+    </div>
+    <div class="form-group"><label>ברוקר</label><select id="posBroker"></select></div>
+    <div class="form-group"><label>כמות</label><input type="number" id="posQty" placeholder="100"/></div>
+    <div class="form-group"><label>מחיר קנייה ממוצע ($)</label><input type="number" id="posAvg" placeholder="150.00"/></div>
+    <div class="form-group"><label>מטבע</label>
+      <select id="posCurrency"><option value="USD">USD $</option><option value="ILS">ILS ₪</option></select>
+    </div>
+    <button class="btn-green" id="addPosBtn">+ הוסף פוזיציה</button>
   </div>
+  <div class="card">
+    <div class="card-title">פוזיציות קיימות</div>
+    <div id="posList"><p class="empty">אין פוזיציות עדיין</p></div>
+  </div>
+</div>
 
-  <!-- SETTINGS -->
-  <div class="tab fade" id="tab-settings">
-    <div class="card">
-      <span style="font-size:16px;font-weight:600;display:block;margin-bottom:6px">חיבור Google Sheets</span>
-      <p class="settings-note">
-        פרסם את הגיליון שלך:<br/>
-        <strong style="color:#e8edf5">File → Share → Publish to web → בחר גיליון → CSV → Publish</strong><br/>
+<!-- TAB: עסקאות -->
+<div class="tab" id="tab-trades">
+  <div class="card">
+    <div class="card-title">רשום עסקה</div>
+    <div class="side-toggle">
+      <button class="buy active" id="sideBuy">▲ קנייה</button>
+      <button class="sell" id="sideSell">▼ מכירה</button>
+    </div>
+    <div class="form-group"><label>טיקר</label><select id="tradeSymbol"></select></div>
+    <div class="form-group"><label>ברוקר</label><select id="tradeBroker"></select></div>
+    <div class="form-group"><label>כמות</label><input type="number" id="tradeQty" placeholder="50"/></div>
+    <div class="form-group"><label>מחיר ביצוע ($)</label><input type="number" id="tradePrice" placeholder="200.00"/></div>
+    <div class="form-group"><label>תאריך</label><input type="date" id="tradeDate"/></div>
+    <button class="btn-green" id="addTradeBtn">שמור עסקה</button>
+  </div>
+  <div class="card">
+    <div class="card-title">היסטוריה</div>
+    <div id="tradeList"><p class="empty">אין עסקאות עדיין</p></div>
+  </div>
+</div>
+
+<!-- TAB: הגדרות -->
+<div class="tab" id="tab-settings">
+  <div class="card">
+    <div class="setting-section">
+      <h3>חיבור Google Sheets</h3>
+      <p style="color:#7a9bb5;font-size:13px;line-height:1.6;margin-bottom:12px">
+        ב-Google Sheets: <strong style="color:#f0f4f8">File → Share → Publish to web → CSV → Publish</strong><br/>
         העתק את ה-URL לכאן:
       </p>
-      <div class="url-row">
+      <div class="url-input-row">
         <input type="text" id="urlInput" placeholder="https://docs.google.com/spreadsheets/d/..."/>
-        <button class="btn" style="width:auto;margin-top:0" id="saveUrlBtn">שמור</button>
+        <button id="saveUrlBtn">שמור</button>
       </div>
-      <p class="connected" id="connectedMsg" style="display:none"></p>
+      <p class="connected-msg" id="connectedMsg" style="display:none"></p>
+    </div>
 
-      <span class="schema-title">מבנה הגיליון הנדרש</span>
-      <p style="color:#8892a4;font-size:13px;margin-bottom:14px;line-height:1.6">שורה 1 = כותרות. הנוסחאות בעמודות C ו-D.</p>
-      <div class="overflow">
-        <table>
-          <thead><tr><th>A: Symbol</th><th>B: Name</th><th>C: Price</th><th>D: PrevClose</th></tr></thead>
-          <tbody>
-            <tr><td>USDILS</td><td style="color:#8892a4">USD/ILS Rate</td><td class="green mono">=GOOGLEFINANCE("CURRENCY:USDILS","price")</td><td class="green mono">=GOOGLEFINANCE("CURRENCY:USDILS","closeyest")</td></tr>
-            <tr><td>NVDA</td><td style="color:#8892a4">NVIDIA</td><td class="green mono">=GOOGLEFINANCE("NVDA","price")</td><td class="green mono">=GOOGLEFINANCE("NVDA","closeyest")</td></tr>
-            <tr><td>TSLA</td><td style="color:#8892a4">Tesla</td><td class="green mono">=GOOGLEFINANCE("TSLA","price")</td><td class="green mono">=GOOGLEFINANCE("TSLA","closeyest")</td></tr>
-            <tr><td style="color:#4a5568">...</td><td style="color:#4a5568">...</td><td style="color:#4a5568">...</td><td style="color:#4a5568">...</td></tr>
-          </tbody>
-        </table>
-      </div>
-      <p style="color:#4a5568;font-size:12px;margin-top:14px">
-        להוספת טיקרים ישראלים: <span class="green mono">=GOOGLEFINANCE("TASE:1159235","price")</span>
+    <div class="setting-section" style="border-top:1px solid #1e2d3d;padding-top:20px">
+      <h3>מבנה הגיליון</h3>
+      <p style="color:#7a9bb5;font-size:12px;line-height:1.7">
+        <strong style="color:#f0f4f8">עמודה A:</strong> Symbol (NVDA, TSLA וכו')<br/>
+        <strong style="color:#f0f4f8">עמודה B:</strong> שם<br/>
+        <strong style="color:#f0f4f8">עמודה C:</strong> <span style="color:#3dd68c;font-family:monospace">=GOOGLEFINANCE("NVDA","price")</span><br/>
+        <strong style="color:#f0f4f8">עמודה D:</strong> <span style="color:#3dd68c;font-family:monospace">=GOOGLEFINANCE("NVDA","closeyest")</span><br/>
+        <strong style="color:#f0f4f8">שורה USDILS:</strong> <span style="color:#3dd68c;font-family:monospace">=GOOGLEFINANCE("CURRENCY:USDILS","price")</span>
       </p>
     </div>
   </div>
+</div>
 
-</main>
+<!-- Bottom Nav -->
+<nav class="bottom-nav">
+  <button class="nav-btn active" data-tab="portfolio"><span class="icon">💼</span>התיק שלי</button>
+  <button class="nav-btn" data-tab="positions"><span class="icon">📈</span>פוזיציות</button>
+  <button class="nav-btn" data-tab="trades"><span class="icon">🔄</span>עסקאות</button>
+  <button class="nav-btn" data-tab="settings"><span class="icon">⚙️</span>הגדרות</button>
+</nav>
+
+<!-- Modal: הוספת טיקר חדש -->
+<div class="modal-bg" id="newTickerModal">
+  <div class="modal">
+    <h3>טיקר חדש נוסף ✨</h3>
+    <p>הוספת טיקר שלא קיים בגיליון שלך.<br/>כדי לראות מחיר עדכני, תצטרך להוסיף אותו ב-Google Sheets.</p>
+    <div class="modal-btns">
+      <button class="primary" onclick="document.getElementById('newTickerModal').classList.remove('open')">הבנתי</button>
+      <button class="secondary" onclick="document.getElementById('newTickerModal').classList.remove('open');switchTab('settings')">פתח הגדרות</button>
+    </div>
+  </div>
+</div>
 
 <script>
-const BROKERS = ["IBI","מיטב","פסגות","אקסלנס","Interactive Brokers","אחר"];
-const SYMBOLS = [
-  {sym:"VRT",name:"Vertiv"},{sym:"AMD",name:"AMD"},{sym:"MRVL",name:"Marvell"},
-  {sym:"TSLA",name:"Tesla"},{sym:"BBAI",name:"BigBear.ai"},{sym:"BMNR",name:"BitMine"},
-  {sym:"IBIT",name:"iShares Bitcoin ETF"},{sym:"MSTR",name:"MicroStrategy"},
-  {sym:"RGTI",name:"Rigetti"},{sym:"SOFI",name:"SoFi"},{sym:"MSFT",name:"Microsoft"},
-  {sym:"MU",name:"Micron"},{sym:"NVDA",name:"NVIDIA"},{sym:"AVGO",name:"Broadcom"},
-  {sym:"PLTR",name:"Palantir"},{sym:"UBER",name:"Uber"},{sym:"USAR",name:"USA Rare Earth"},
-];
+const BROKERS  = ["IBI","מיטב","פסגות","אקסלנס","Interactive Brokers","אחר"];
+const SYMBOLS  = ["VRT","AMD","MRVL","TSLA","BBAI","BMNR","IBIT","MSTR","RGTI","SOFI","MSFT","MU","NVDA","AVGO","PLTR","UBER","USAR"];
 const REFRESH_MS = 5 * 60 * 1000;
 
-// ── Storage ──────────────────────────────────────────────────────────────────
-const load = (k,d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; }};
+const load = (k,d) => { try { return JSON.parse(localStorage.getItem(k))??d; } catch { return d; }};
 const save = (k,v) => localStorage.setItem(k, JSON.stringify(v));
 
-// ── State ────────────────────────────────────────────────────────────────────
-let positions = load("ptf_pos", []);
-let trades    = load("ptf_trd", []);
-let quotes    = [];
-let usdIls    = null;
-let tradeSide = "buy";
+let positions  = load("ptf_pos", []);
+let trades     = load("ptf_trd", []);
+let customSyms = load("ptf_custom", []);
+let quotes     = [];
+let usdIls     = null;
+let tradeSide  = "buy";
 
-// ── Formatters ───────────────────────────────────────────────────────────────
 const fmt2 = n => (n==null||isNaN(n)) ? "—" : Math.abs(n).toLocaleString("he-IL",{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmt0 = n => (n==null||isNaN(n)) ? "—" : Math.abs(n).toLocaleString("he-IL",{minimumFractionDigits:0,maximumFractionDigits:0});
 const fIls = n => (n==null||isNaN(n)) ? "—" : `₪${fmt0(n)}`;
 const fUsd = n => (n==null||isNaN(n)) ? "—" : `$${fmt0(n)}`;
-const fPct = n => (n==null||isNaN(n)) ? "—" : `${n>=0?"+":""}${(n*100).toFixed(2)}%`;
-const clr  = n => (n==null||isNaN(n)) ? "#8892a4" : n>=0 ? "#00e5a0" : "#ff4d6d";
+const fPct = n => (n==null||isNaN(n)) ? "—" : `${n>=0?"+":"−"}${(Math.abs(n)*100).toFixed(2)}%`;
+const clrClass = n => (n==null||isNaN(n)||n===0) ? "" : n>0 ? "green" : "red";
 const tri  = n => n>=0 ? "▲" : "▼";
 const esc  = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 
-// ── Tabs ─────────────────────────────────────────────────────────────────────
-document.querySelectorAll("nav button").forEach(btn => {
-  btn.addEventListener("click", () => {
-    document.querySelectorAll("nav button").forEach(b => b.classList.remove("active"));
-    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-    btn.classList.add("active");
-    document.getElementById("tab-" + btn.dataset.tab).classList.add("active");
-  });
+// ── Tabs ──────────────────────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+  document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+  document.getElementById("tab-"+name).classList.add("active");
+  document.querySelector(`.nav-btn[data-tab="${name}"]`).classList.add("active");
+}
+document.querySelectorAll(".nav-btn").forEach(btn => {
+  btn.addEventListener("click", () => switchTab(btn.dataset.tab));
 });
 
-// ── Populate selects ─────────────────────────────────────────────────────────
+// ── Selects ───────────────────────────────────────────────────────────────────
+function allSymbols() {
+  return [...SYMBOLS, ...customSyms].filter((v,i,a) => a.indexOf(v)===i);
+}
 function populateSelects() {
+  const syms = allSymbols();
   ["posSymbol","tradeSymbol"].forEach(id => {
     const el = document.getElementById(id);
-    el.innerHTML = SYMBOLS.map(s => `<option value="${s.sym}">${s.sym} — ${s.name}</option>`).join("");
+    const cur = el.value;
+    el.innerHTML = syms.map(s=>`<option value="${esc(s)}">${esc(s)}</option>`).join("") +
+                   `<option value="__custom__">+ הוסף טיקר חדש...</option>`;
+    if (cur && syms.includes(cur)) el.value = cur;
   });
   ["posBroker","tradeBroker"].forEach(id => {
-    const el = document.getElementById(id);
-    el.innerHTML = BROKERS.map(b => `<option>${esc(b)}</option>`).join("");
+    document.getElementById(id).innerHTML = BROKERS.map(b=>`<option>${esc(b)}</option>`).join("");
   });
   document.getElementById("tradeDate").value = new Date().toISOString().slice(0,10);
 }
 
-// ── Fetch quotes ─────────────────────────────────────────────────────────────
+document.getElementById("posSymbol").addEventListener("change", function() {
+  const show = this.value === "__custom__";
+  document.getElementById("customSymbolGroup").style.display = show ? "" : "none";
+});
+
+// ── Fetch ─────────────────────────────────────────────────────────────────────
 async function fetchQuotes() {
   const url = load("ptf_url","");
   if (!url) return;
-  document.getElementById("loadingDot").style.display = "";
+  document.getElementById("refreshBtn").textContent = "⟳ טוען...";
   try {
-    const proxy = "https://api.allorigins.win/get?url=" + encodeURIComponent(url);
-    const res  = await fetch(proxy);
+    const res  = await fetch("https://api.allorigins.win/get?url="+encodeURIComponent(url));
     const json = await res.json();
     const rows = json.contents.trim().split("\n").slice(1).map(line => {
       const c = line.split(",");
       return { symbol:(c[0]||"").trim(), price:parseFloat(c[2]), prevClose:parseFloat(c[3]) };
     }).filter(r => r.symbol && !isNaN(r.price));
-    const fx = rows.find(r => r.symbol === "USDILS");
+    const fx = rows.find(r => r.symbol==="USDILS");
     if (fx) usdIls = fx.price;
-    quotes = rows.filter(r => r.symbol !== "USDILS");
+    quotes = rows.filter(r => r.symbol!=="USDILS");
     const t = new Date();
-    document.getElementById("lastUpd").textContent = t.toLocaleTimeString("he-IL",{hour:"2-digit",minute:"2-digit"});
+    document.getElementById("lastUpd").textContent = "עודכן: "+t.toLocaleTimeString("he-IL",{hour:"2-digit",minute:"2-digit"});
     render();
-  } catch(e) { console.error("Fetch error", e); }
-  document.getElementById("loadingDot").style.display = "none";
+  } catch(e) { console.error(e); }
+  document.getElementById("refreshBtn").textContent = "⟳ רענן";
 }
 
-// ── Enrich positions ─────────────────────────────────────────────────────────
+// ── Enrich ────────────────────────────────────────────────────────────────────
 function enrich() {
   return positions.map(pos => {
-    const q   = quotes.find(q => q.symbol === pos.symbol);
-    const fx  = pos.currency === "ILS" ? 1 : (usdIls || 1);
-    const price     = q ? q.price     : null;
-    const prevClose = q ? q.prevClose  : null;
-    const valueIls  = price != null ? price * pos.qty * fx : null;
-    const costIls   = pos.avgPrice * pos.qty * fx;
-    const gainIls   = valueIls != null ? valueIls - costIls : null;
-    const gainPct   = gainIls != null && costIls ? gainIls / costIls : null;
-    const dailyIls  = price != null && prevClose != null ? (price - prevClose) * pos.qty * fx : null;
-    return Object.assign({}, pos, { price, prevClose, valueIls, costIls, gainIls, gainPct, dailyIls });
+    const q = quotes.find(q => q.symbol===pos.symbol);
+    const fx = pos.currency==="ILS" ? 1 : (usdIls||1);
+    const price     = q ? q.price : null;
+    const prevClose = q ? q.prevClose : null;
+    const valueIls  = price!=null ? price*pos.qty*fx : null;
+    const costIls   = pos.avgPrice*pos.qty*fx;
+    const gainIls   = valueIls!=null ? valueIls-costIls : null;
+    const gainPct   = gainIls!=null&&costIls ? gainIls/costIls : null;
+    const dailyIls  = price!=null&&prevClose!=null ? (price-prevClose)*pos.qty*fx : null;
+    return Object.assign({},pos,{price,prevClose,valueIls,costIls,gainIls,gainPct,dailyIls});
   });
 }
 
-// ── Render ───────────────────────────────────────────────────────────────────
+// ── Render ────────────────────────────────────────────────────────────────────
 function render() {
   const ep = enrich();
-  const totalValue = ep.reduce((s,p) => s + (p.valueIls || 0), 0);
-  const totalCost  = ep.reduce((s,p) => s + p.costIls, 0);
-  const totalGain  = totalValue - totalCost;
-  const totalGainP = totalCost ? totalGain / totalCost : 0;
-  const totalDaily = ep.reduce((s,p) => s + (p.dailyIls || 0), 0);
+  const totalValue = ep.reduce((s,p)=>s+(p.valueIls||0),0);
+  const totalCost  = ep.reduce((s,p)=>s+p.costIls,0);
+  const totalGain  = totalValue-totalCost;
+  const totalGainP = totalCost ? totalGain/totalCost : 0;
+  const totalDaily = ep.reduce((s,p)=>s+(p.dailyIls||0),0);
 
   // KPIs
-  document.getElementById("kpiValue").textContent    = fIls(totalValue);
-  document.getElementById("kpiValue").style.color    = "#e8edf5";
+  const setKpi = (id,val,cls) => { const el=document.getElementById(id); el.textContent=val; el.className="kpi-val"+(cls?" "+cls:""); };
+  setKpi("kpiValue", fIls(totalValue), "");
   document.getElementById("kpiValueUsd").textContent = fUsd(usdIls ? totalValue/usdIls : null);
+  setKpi("kpiDaily", (totalDaily?tri(totalDaily)+" ":"")+fIls(totalDaily), clrClass(totalDaily));
+  document.getElementById("kpiDailySub").textContent = fUsd(usdIls ? totalDaily/usdIls : null);
+  setKpi("kpiGain", (totalGain?tri(totalGain)+" ":"")+fIls(totalGain), clrClass(totalGain));
+  document.getElementById("kpiGainPct").textContent = fPct(totalGainP);
+  if (usdIls) { document.getElementById("kpiFx").textContent="₪"+usdIls.toFixed(3); document.getElementById("kpiFxSub").textContent="מ-Google Sheets"; }
+  document.getElementById("noUrlWarn").style.display = load("ptf_url","") ? "none" : "";
 
-  document.getElementById("kpiDaily").textContent    = totalDaily ? tri(totalDaily)+" "+fIls(totalDaily) : fIls(totalDaily);
-  document.getElementById("kpiDaily").style.color    = clr(totalDaily);
-  document.getElementById("kpiDailyUsd").textContent = fUsd(usdIls ? totalDaily/usdIls : null);
+  // Portfolio list
+  const pfl = document.getElementById("portfolioList");
+  if (!ep.length) { pfl.innerHTML='<p class="empty">הוסף פוזיציות בטאב פוזיציות</p>'; }
+  else pfl.innerHTML = ep.map(p => {
+    const gc = clrClass(p.gainIls);
+    const dc = clrClass(p.dailyIls);
+    return `<div class="pos-item">
+      <div class="pos-left">
+        <div class="ticker">${esc(p.symbol)}</div>
+        <div class="meta">${p.qty} יח' · עלות $${fmt2(p.avgPrice)}</div>
+        <div class="meta" style="margin-top:2px">יומי: <span style="color:${p.dailyIls!=null?(p.dailyIls>=0?'#3dd68c':'#ff5c7a'):'#4a6278'}">${p.dailyIls!=null?tri(p.dailyIls)+" "+fIls(Math.abs(p.dailyIls)):"—"}</span></div>
+      </div>
+      <div class="pos-right">
+        <div class="val ${gc}">${p.valueIls!=null?fIls(p.valueIls):"—"}</div>
+        <div class="pct ${gc}">${p.gainIls!=null?tri(p.gainIls)+" "+fIls(Math.abs(p.gainIls)):"—"}</div>
+        <div class="pct ${gc}" style="font-size:11px">${fPct(p.gainPct)}</div>
+      </div>
+    </div>`;
+  }).join("");
 
-  document.getElementById("kpiGain").textContent     = totalGain ? tri(totalGain)+" "+fIls(totalGain) : fIls(totalGain);
-  document.getElementById("kpiGain").style.color     = clr(totalGain);
-  document.getElementById("kpiGainPct").textContent  = fPct(totalGainP);
-
-  if (usdIls) {
-    document.getElementById("kpiFx").textContent     = "₪" + usdIls.toFixed(3);
-    document.getElementById("kpiFxSub").textContent  = "מ-Google Sheets";
-  }
-
-  const hasUrl = !!load("ptf_url","");
-  document.getElementById("noUrlWarn").style.display = hasUrl ? "none" : "";
-  document.getElementById("posCount").textContent = ep.length + " ניירות";
-
-  // Dashboard table
-  const tbody = document.getElementById("dashTable");
-  if (ep.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="9" class="empty">אין פוזיציות — הוסף בטאב פוזיציות</td></tr>';
-  } else {
-    tbody.innerHTML = ep.map(p => `
-      <tr>
-        <td class="sym">${esc(p.symbol)}</td>
-        <td>${esc(p.broker)}</td>
-        <td>${p.qty}</td>
-        <td>${p.price != null ? "$"+fmt2(p.price) : "—"}</td>
-        <td>$${fmt2(p.avgPrice)}</td>
-        <td>${fIls(p.valueIls)}</td>
-        <td style="color:${clr(p.dailyIls)};font-weight:600">${p.dailyIls != null ? tri(p.dailyIls)+" "+fIls(Math.abs(p.dailyIls)) : "—"}</td>
-        <td style="color:${clr(p.gainIls)};font-weight:600">${p.gainIls != null ? tri(p.gainIls)+" "+fIls(Math.abs(p.gainIls)) : "—"}</td>
-        <td style="color:${clr(p.gainPct)};font-weight:600">${fPct(p.gainPct)}</td>
-      </tr>`).join("");
-  }
-
-  // Positions list
-  const posList = document.getElementById("posList");
-  if (positions.length === 0) {
-    posList.innerHTML = '<p class="empty">אין פוזיציות עדיין</p>';
-  } else {
-    posList.innerHTML = positions.map((p,i) => `
-      <div class="pos-row">
-        <div>
-          <span style="font-weight:700;font-size:15px;margin-left:10px">${esc(p.symbol)}</span>
-          <span style="color:#4a5568;font-size:12px">${esc(p.broker)} · ${p.qty} יח׳ · עלות $${fmt2(p.avgPrice)} · ${p.currency}</span>
-        </div>
-        <button class="btn-sm" data-remove="${i}">✕</button>
-      </div>`).join("");
-    posList.querySelectorAll("[data-remove]").forEach(btn => {
-      btn.addEventListener("click", () => {
-        positions = positions.filter((_,idx) => idx !== +btn.dataset.remove);
-        save("ptf_pos", positions);
-        render();
-      });
-    });
-  }
+  // Positions manage list
+  const pl = document.getElementById("posList");
+  if (!positions.length) { pl.innerHTML='<p class="empty">אין פוזיציות עדיין</p>'; }
+  else pl.innerHTML = positions.map((p,i)=>`
+    <div class="pos-item">
+      <div class="pos-left">
+        <div class="ticker">${esc(p.symbol)}</div>
+        <div class="meta">${esc(p.broker)} · ${p.qty} יח' · $${fmt2(p.avgPrice)} · ${p.currency}</div>
+      </div>
+      <button class="btn-outline" data-rm="${i}">הסר</button>
+    </div>`).join("");
+  pl.querySelectorAll("[data-rm]").forEach(b=>b.addEventListener("click",()=>{
+    positions=positions.filter((_,i)=>i!==+b.dataset.rm); save("ptf_pos",positions); render();
+  }));
 
   // Trades list
-  const tradeList = document.getElementById("tradeList");
-  if (trades.length === 0) {
-    tradeList.innerHTML = '<p class="empty">אין עסקאות עדיין</p>';
-  } else {
-    tradeList.innerHTML = trades.map(t => `
-      <div class="trade-row">
-        <span style="font-weight:700;font-size:12px;width:44px;flex-shrink:0;color:${t.side==="buy"?"#00e5a0":"#ff4d6d"}">${t.side==="buy"?"קנייה":"מכירה"}</span>
-        <div style="flex:1">
-          <span style="font-weight:700;margin-left:8px">${esc(t.symbol)}</span>
-          <span style="color:#4a5568;font-size:12px">${t.qty} יח׳ × $${fmt2(t.price)} · ${esc(t.broker)} · ${t.date}</span>
-        </div>
-        <span style="color:#8892a4;font-size:13px">$${fmt0(t.qty*t.price)}</span>
-      </div>`).join("");
-  }
+  const tl = document.getElementById("tradeList");
+  if (!trades.length) { tl.innerHTML='<p class="empty">אין עסקאות עדיין</p>'; }
+  else tl.innerHTML = trades.map(t=>`
+    <div class="trade-item">
+      <span class="trade-badge ${t.side}">${t.side==="buy"?"קנייה":"מכירה"}</span>
+      <div style="flex:1">
+        <div style="font-weight:700;color:#fff">${esc(t.symbol)}</div>
+        <div style="font-size:12px;color:#7a9bb5">${t.qty} יח' × $${fmt2(t.price)} · ${esc(t.broker)} · ${t.date}</div>
+      </div>
+      <div style="font-size:13px;color:#f0f4f8;font-weight:600">$${fmt0(t.qty*t.price)}</div>
+    </div>`).join("");
 }
 
-// ── Add position ─────────────────────────────────────────────────────────────
+// ── Add position ──────────────────────────────────────────────────────────────
 document.getElementById("addPosBtn").addEventListener("click", () => {
+  let sym = document.getElementById("posSymbol").value;
+  if (sym === "__custom__") {
+    sym = document.getElementById("customSymbol").value.trim().toUpperCase();
+    if (!sym) return;
+    if (!customSyms.includes(sym)) { customSyms.push(sym); save("ptf_custom",customSyms); populateSelects(); }
+    document.getElementById("newTickerModal").classList.add("open");
+  }
   const qty = parseFloat(document.getElementById("posQty").value);
   const avg = parseFloat(document.getElementById("posAvg").value);
-  const sym = document.getElementById("posSymbol").value;
+  if (!qty||!avg||!sym) return;
   const brk = document.getElementById("posBroker").value;
   const cur = document.getElementById("posCurrency").value;
-  if (!qty || !avg) return;
-  const idx = positions.findIndex(p => p.symbol === sym && p.broker === brk);
-  if (idx >= 0) {
-    const old = positions[idx];
-    const nq  = old.qty + qty;
-    const na  = (old.avgPrice * old.qty + avg * qty) / nq;
-    positions[idx] = Object.assign({}, old, { qty:nq, avgPrice:na });
-  } else {
-    positions.push({ symbol:sym, broker:brk, qty, avgPrice:avg, currency:cur });
-  }
-  save("ptf_pos", positions);
-  document.getElementById("posQty").value = "";
-  document.getElementById("posAvg").value = "";
+  const idx = positions.findIndex(p=>p.symbol===sym&&p.broker===brk);
+  if (idx>=0) {
+    const old=positions[idx], nq=old.qty+qty;
+    positions[idx]=Object.assign({},old,{qty:nq,avgPrice:(old.avgPrice*old.qty+avg*qty)/nq});
+  } else { positions.push({symbol:sym,broker:brk,qty,avgPrice:avg,currency:cur}); }
+  save("ptf_pos",positions);
+  document.getElementById("posQty").value="";
+  document.getElementById("posAvg").value="";
+  document.getElementById("customSymbol").value="";
+  document.getElementById("customSymbolGroup").style.display="none";
+  document.getElementById("posSymbol").value=sym;
   render();
 });
 
-// ── Add trade ────────────────────────────────────────────────────────────────
-document.getElementById("sideBuy").addEventListener("click",  () => { tradeSide="buy";  document.getElementById("sideBuy").classList.add("active");  document.getElementById("sideSell").classList.remove("active"); });
-document.getElementById("sideSell").addEventListener("click", () => { tradeSide="sell"; document.getElementById("sideSell").classList.add("active"); document.getElementById("sideBuy").classList.remove("active"); });
-
-document.getElementById("addTradeBtn").addEventListener("click", () => {
-  const qty   = parseFloat(document.getElementById("tradeQty").value);
-  const price = parseFloat(document.getElementById("tradePrice").value);
-  if (!qty || !price) return;
-  trades.unshift({
-    symbol: document.getElementById("tradeSymbol").value,
-    broker: document.getElementById("tradeBroker").value,
-    side:   tradeSide,
-    qty, price,
-    date:   document.getElementById("tradeDate").value,
-    id:     Date.now()
-  });
-  save("ptf_trd", trades);
-  document.getElementById("tradeQty").value   = "";
-  document.getElementById("tradePrice").value = "";
+// ── Add trade ─────────────────────────────────────────────────────────────────
+document.getElementById("sideBuy").addEventListener("click",()=>{
+  tradeSide="buy";
+  document.getElementById("sideBuy").classList.add("active");
+  document.getElementById("sideSell").classList.remove("active");
+});
+document.getElementById("sideSell").addEventListener("click",()=>{
+  tradeSide="sell";
+  document.getElementById("sideSell").classList.add("active");
+  document.getElementById("sideBuy").classList.remove("active");
+});
+document.getElementById("addTradeBtn").addEventListener("click",()=>{
+  const qty=parseFloat(document.getElementById("tradeQty").value);
+  const price=parseFloat(document.getElementById("tradePrice").value);
+  if(!qty||!price) return;
+  trades.unshift({symbol:document.getElementById("tradeSymbol").value,broker:document.getElementById("tradeBroker").value,side:tradeSide,qty,price,date:document.getElementById("tradeDate").value,id:Date.now()});
+  save("ptf_trd",trades);
+  document.getElementById("tradeQty").value="";
+  document.getElementById("tradePrice").value="";
   render();
 });
 
-// ── Settings ─────────────────────────────────────────────────────────────────
-const urlInput = document.getElementById("urlInput");
-urlInput.value = load("ptf_url","");
-
-document.getElementById("saveUrlBtn").addEventListener("click", () => {
-  save("ptf_url", urlInput.value.trim());
-  const msg = document.getElementById("connectedMsg");
-  msg.textContent = "✓ נשמר — מעדכן מחירים...";
-  msg.style.display = "";
+// ── Settings ──────────────────────────────────────────────────────────────────
+document.getElementById("urlInput").value = load("ptf_url","");
+document.getElementById("saveUrlBtn").addEventListener("click",()=>{
+  const v=document.getElementById("urlInput").value.trim();
+  save("ptf_url",v);
+  const msg=document.getElementById("connectedMsg");
+  msg.textContent="✓ נשמר — מעדכן מחירים...";
+  msg.style.display="";
   fetchQuotes();
 });
+document.getElementById("refreshBtn").addEventListener("click",fetchQuotes);
 
-// ── Refresh button ───────────────────────────────────────────────────────────
-document.getElementById("refreshBtn").addEventListener("click", fetchQuotes);
-
-// ── Init ─────────────────────────────────────────────────────────────────────
+// ── Init ──────────────────────────────────────────────────────────────────────
 populateSelects();
 render();
 fetchQuotes();
-setInterval(fetchQuotes, REFRESH_MS);
+setInterval(fetchQuotes,REFRESH_MS);
 </script>
 </body>
 </html>
