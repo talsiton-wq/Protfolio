@@ -413,14 +413,13 @@ function render() {
           <span style="color:#f0f4f8;font-weight:700;font-size:14px">${p.price!=null?'$'+fmt2(p.price):'—'}</span>
           ${priceChg!=null?`<span style="color:${pcColor};font-size:12px"> ${tri(priceChg)}$${fmt2(Math.abs(priceChg))} (${fPct(priceChg/p.avgPrice)})</span>`:''}
         </div>
+        <div style="margin-top:6px;background:${gcBg};border-radius:8px;padding:5px 8px;display:inline-block">
+          <span style="font-size:13px;font-weight:700;color:${gcClr}">${gainStr}</span>
+          <span style="font-size:11px;font-weight:600;color:${gcClr}"> ${fPct(p.gainPct)}</span>
+        </div>
       </div>
       <div class="pos-right" style="text-align:left">
         <div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:6px">${showVal}</div>
-        <div style="background:${gcBg};border-radius:8px;padding:5px 8px;margin-bottom:4px">
-          <div style="font-size:10px;color:#7a9bb5;margin-bottom:1px">כולל</div>
-          <div style="font-size:13px;font-weight:700;color:${gcClr}">${gainStr}</div>
-          <div style="font-size:11px;font-weight:600;color:${gcClr}">${fPct(p.gainPct)}</div>
-        </div>
         <div style="background:${dcBg};border-radius:8px;padding:5px 8px">
           <div style="font-size:10px;color:#7a9bb5;margin-bottom:1px">היום</div>
           <div style="font-size:13px;font-weight:700;color:${dcClr}">${dailyStr}</div>
