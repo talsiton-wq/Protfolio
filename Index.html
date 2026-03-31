@@ -153,6 +153,14 @@ body{background:#0f1923;color:#f0f4f8;font-family:-apple-system,BlinkMacSystemFo
     <div class="card-title">פוזיציות קיימות</div>
     <div id="posList"><p class="empty">אין פוזיציות עדיין</p></div>
   </div>
+  <div class="card">
+    <div class="card-title">גיבוי ושחזור</div>
+    <button class="btn-green" id="exportBtn" style="margin-bottom:10px">⬇ ייצוא נתונים</button>
+    <label class="btn-green" style="display:block;text-align:center;cursor:pointer">
+      ⬆ ייבוא נתונים
+      <input type="file" id="importFile" accept=".json" style="display:none"/>
+    </label>
+  </div>
 </div>
 
 <!-- TAB: עסקאות -->
@@ -341,6 +349,7 @@ function enrich() {
     const gainNative  = valueNative!=null ? valueNative-costNative : null;
     const gainPct     = gainNative!=null && costNative ? gainNative/costNative : null;
     const dailyNative = price!=null && prevClose!=null ? (price-prevClose)*pos.qty : null;
+    const dailyPct    = price!=null && prevClose!=null && prevClose ? (price-prevClose)/prevClose : null;
 
     // ערכים בשקלים — רק כשיש שער
     const valueIls  = valueNative!=null && fx!=null ? valueNative*fx : null;
@@ -348,7 +357,7 @@ function enrich() {
     const gainIls   = gainNative!=null && fx!=null ? gainNative*fx : null;
     const dailyIls  = dailyNative!=null && fx!=null ? dailyNative*fx : null;
 
-    return Object.assign({},pos,{price,prevClose,valueNative,costNative,gainNative,gainPct,dailyNative,valueIls,costIls,gainIls,dailyIls});
+    return Object.assign({},pos,{price,prevClose,valueNative,costNative,gainNative,gainPct,dailyNative,dailyPct,valueIls,costIls,gainIls,dailyIls});
   });
 }
 
@@ -382,29 +391,31 @@ function render() {
   const pfl = document.getElementById("portfolioList");
   if (!ep.length) { pfl.innerHTML='<p class="empty">הוסף פוזיציות בטאב פוזיציות</p>'; }
   else pfl.innerHTML = ep.map(p => {
-    const showVal  = p.valueIls!=null ? fIls(p.valueIls) : p.valueNative!=null ? fUsd(p.valueNative) : "—";
-    const showGain = p.gainIls!=null  ? p.gainIls        : p.gainNative;
-    const showDaily = p.dailyIls!=null ? p.dailyIls      : p.dailyNative;
+    const fV = n => p.valueIls!=null||p.gainIls!=null ? fIls(n) : fUsd(n);
+    const showVal   = p.valueIls!=null  ? fIls(p.valueIls)  : p.valueNative!=null  ? fUsd(p.valueNative)  : "—";
+    const showGain  = p.gainIls!=null   ? p.gainIls          : p.gainNative;
+    const showDaily = p.dailyIls!=null  ? p.dailyIls         : p.dailyNative;
     const gc = clrClass(showGain);
     const dc = clrClass(showDaily);
-    const showGainStr  = showGain!=null  ? `${tri(showGain)}  ${p.gainIls!=null ?fIls(Math.abs(showGain)) :fUsd(Math.abs(showGain))}` : "—";
-    const showDailyStr = showDaily!=null ? `${tri(showDaily)} ${p.dailyIls!=null?fIls(Math.abs(showDaily)):fUsd(Math.abs(showDaily))}` : "—";
-    const priceChg = p.price!=null ? p.price-p.avgPrice : null;
-    const pcColor = priceChg>0?'#3dd68c':priceChg<0?'#ff5c7a':'#4a6278';
-    return `<div class="pos-item">
+    const gainStr  = showGain!=null  ? `${tri(showGain)} ${fV(Math.abs(showGain))}` : "—";
+    const dailyStr = showDaily!=null ? `${tri(showDaily)} ${fV(Math.abs(showDaily))}` : "—";
+    const priceChg = p.price!=null ? p.price - p.avgPrice : null;
+    const pcColor  = priceChg>0?'#3dd68c':priceChg<0?'#ff5c7a':'#7a9bb5';
+    return `<div class="pos-item" style="align-items:flex-start;padding:16px 0">
       <div class="pos-left">
         <div class="ticker">${esc(p.symbol)}</div>
-        <div class="meta">${p.qty} יח' · קנייה $${fmt2(p.avgPrice)}</div>
-        <div class="meta" style="margin-top:3px">
-          מחיר: <strong style="color:#f0f4f8">${p.price!=null?'$'+fmt2(p.price):'—'}</strong>
-          ${priceChg!=null?`<span style="color:${pcColor}"> ${tri(priceChg)} $${fmt2(Math.abs(priceChg))} (${fPct(priceChg/p.avgPrice)})</span>`:''}
+        <div class="meta" style="margin-top:3px">${p.qty} יח' · קנייה $${fmt2(p.avgPrice)}</div>
+        <div class="meta" style="margin-top:4px">
+          <span style="color:#f0f4f8;font-weight:600">${p.price!=null?'$'+fmt2(p.price):'—'}</span>
+          ${priceChg!=null?`<span style="color:${pcColor}"> ${tri(priceChg)}$${fmt2(Math.abs(priceChg))}</span>`:''}
         </div>
       </div>
-      <div class="pos-right">
-        <div class="val ${gc}">${showVal}</div>
-        <div class="pct ${gc}">${showGainStr}</div>
-        <div class="pct ${gc}" style="font-size:11px">${fPct(p.gainPct)}</div>
-        <div class="pct ${dc}" style="font-size:11px;margin-top:4px;border-top:1px solid #1e2d3d;padding-top:4px">היום: ${showDailyStr}</div>
+      <div class="pos-right" style="text-align:left">
+        <div style="font-size:17px;font-weight:700;color:#fff">${showVal}</div>
+        <div style="margin-top:5px;font-size:12px;color:#7a9bb5">כולל</div>
+        <div style="font-size:13px;font-weight:600" class="${gc}">${gainStr} <span style="font-size:11px">${fPct(p.gainPct)}</span></div>
+        <div style="margin-top:5px;font-size:12px;color:#7a9bb5">היום</div>
+        <div style="font-size:13px;font-weight:600" class="${dc}">${dailyStr} <span style="font-size:11px">${fPct(p.dailyPct)}</span></div>
       </div>
     </div>`;
   }).join("");
@@ -489,6 +500,33 @@ document.getElementById("addTradeBtn").addEventListener("click",()=>{
 });
 
 document.getElementById("refreshBtn").addEventListener("click",fetchQuotes);
+
+// ── Export / Import ───────────────────────────────────────────────────────────
+document.getElementById("exportBtn").addEventListener("click",()=>{
+  const data = { positions, trades, customSyms };
+  const blob = new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "portfolio-backup.json";
+  a.click();
+});
+document.getElementById("importFile").addEventListener("change", e=>{
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (data.positions) { positions = data.positions; save("ptf_pos", positions); }
+      if (data.trades)    { trades    = data.trades;    save("ptf_trd", trades); }
+      if (data.customSyms){ customSyms= data.customSyms;save("ptf_custom",customSyms); }
+      populateSelects();
+      render();
+      alert("✓ הנתונים יובאו בהצלחה");
+    } catch { alert("שגיאה בקובץ"); }
+  };
+  reader.readAsText(file);
+});
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 populateSelects();
