@@ -1,5 +1,5 @@
 // Service Worker — network first, no stale cache
-const CACHE = 'portfolio-v1';
+const CACHE = 'portfolio-v2';
 
 self.addEventListener('install', () => self.skipWaiting());
 self.addEventListener('activate', e => {
