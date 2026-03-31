@@ -377,11 +377,13 @@ function render() {
   else pfl.innerHTML = ep.map(p => {
     const showVal  = p.valueIls!=null ? fIls(p.valueIls) : p.valueNative!=null ? fUsd(p.valueNative) : "—";
     const showGain = p.gainIls!=null  ? p.gainIls        : p.gainNative;
+    const showDaily = p.dailyIls!=null ? p.dailyIls      : p.dailyNative;
     const gc = clrClass(showGain);
-    const showGainStr = showGain!=null ? `${tri(showGain)} ${p.gainIls!=null?fIls(Math.abs(showGain)):fUsd(Math.abs(showGain))}` : "—";
+    const dc = clrClass(showDaily);
+    const showGainStr  = showGain!=null  ? `${tri(showGain)}  ${p.gainIls!=null ?fIls(Math.abs(showGain)) :fUsd(Math.abs(showGain))}` : "—";
+    const showDailyStr = showDaily!=null ? `${tri(showDaily)} ${p.dailyIls!=null?fIls(Math.abs(showDaily)):fUsd(Math.abs(showDaily))}` : "—";
     const priceChg = p.price!=null ? p.price-p.avgPrice : null;
-    const pc = clrClass(priceChg);
-    const pcColor = pc==='green'?'#3dd68c':pc==='red'?'#ff5c7a':'#4a6278';
+    const pcColor = priceChg>0?'#3dd68c':priceChg<0?'#ff5c7a':'#4a6278';
     return `<div class="pos-item">
       <div class="pos-left">
         <div class="ticker">${esc(p.symbol)}</div>
@@ -395,6 +397,7 @@ function render() {
         <div class="val ${gc}">${showVal}</div>
         <div class="pct ${gc}">${showGainStr}</div>
         <div class="pct ${gc}" style="font-size:11px">${fPct(p.gainPct)}</div>
+        <div class="pct ${dc}" style="font-size:11px;margin-top:4px;border-top:1px solid #1e2d3d;padding-top:4px">היום: ${showDailyStr}</div>
       </div>
     </div>`;
   }).join("");
