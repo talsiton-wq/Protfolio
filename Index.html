@@ -401,21 +401,31 @@ function render() {
     const dailyStr = showDaily!=null ? `${tri(showDaily)} ${fV(Math.abs(showDaily))}` : "—";
     const priceChg = p.price!=null ? p.price - p.avgPrice : null;
     const pcColor  = priceChg>0?'#3dd68c':priceChg<0?'#ff5c7a':'#7a9bb5';
+    const gcBg = gc==='green'?'rgba(61,214,140,.12)':gc==='red'?'rgba(255,92,122,.12)':'transparent';
+    const dcBg = dc==='green'?'rgba(61,214,140,.12)':dc==='red'?'rgba(255,92,122,.12)':'transparent';
+    const gcClr = gc==='green'?'#3dd68c':gc==='red'?'#ff5c7a':'#7a9bb5';
+    const dcClr = dc==='green'?'#3dd68c':dc==='red'?'#ff5c7a':'#7a9bb5';
     return `<div class="pos-item" style="align-items:flex-start;padding:16px 0">
       <div class="pos-left">
         <div class="ticker">${esc(p.symbol)}</div>
         <div class="meta" style="margin-top:3px">${p.qty} יח' · קנייה $${fmt2(p.avgPrice)}</div>
-        <div class="meta" style="margin-top:4px">
-          <span style="color:#f0f4f8;font-weight:600">${p.price!=null?'$'+fmt2(p.price):'—'}</span>
-          ${priceChg!=null?`<span style="color:${pcColor}"> ${tri(priceChg)}$${fmt2(Math.abs(priceChg))}</span>`:''}
+        <div class="meta" style="margin-top:5px">
+          <span style="color:#f0f4f8;font-weight:700;font-size:14px">${p.price!=null?'$'+fmt2(p.price):'—'}</span>
+          ${priceChg!=null?`<span style="color:${pcColor};font-size:12px"> ${tri(priceChg)}$${fmt2(Math.abs(priceChg))} (${fPct(priceChg/p.avgPrice)})</span>`:''}
         </div>
       </div>
       <div class="pos-right" style="text-align:left">
-        <div style="font-size:17px;font-weight:700;color:#fff">${showVal}</div>
-        <div style="margin-top:5px;font-size:12px;color:#7a9bb5">כולל</div>
-        <div style="font-size:13px;font-weight:600" class="${gc}">${gainStr} <span style="font-size:11px">${fPct(p.gainPct)}</span></div>
-        <div style="margin-top:5px;font-size:12px;color:#7a9bb5">היום</div>
-        <div style="font-size:13px;font-weight:600" class="${dc}">${dailyStr} <span style="font-size:11px">${fPct(p.dailyPct)}</span></div>
+        <div style="font-size:18px;font-weight:700;color:#fff;margin-bottom:6px">${showVal}</div>
+        <div style="background:${gcBg};border-radius:8px;padding:5px 8px;margin-bottom:4px">
+          <div style="font-size:10px;color:#7a9bb5;margin-bottom:1px">כולל</div>
+          <div style="font-size:13px;font-weight:700;color:${gcClr}">${gainStr}</div>
+          <div style="font-size:11px;font-weight:600;color:${gcClr}">${fPct(p.gainPct)}</div>
+        </div>
+        <div style="background:${dcBg};border-radius:8px;padding:5px 8px">
+          <div style="font-size:10px;color:#7a9bb5;margin-bottom:1px">היום</div>
+          <div style="font-size:13px;font-weight:700;color:${dcClr}">${dailyStr}</div>
+          <div style="font-size:11px;font-weight:600;color:${dcClr}">${fPct(p.dailyPct)}</div>
+        </div>
       </div>
     </div>`;
   }).join("");
