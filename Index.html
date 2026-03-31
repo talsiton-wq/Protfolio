@@ -501,8 +501,28 @@ document.getElementById("addTradeBtn").addEventListener("click",()=>{
   const qty=parseFloat(document.getElementById("tradeQty").value);
   const price=parseFloat(document.getElementById("tradePrice").value);
   if(!qty||!price) return;
-  trades.unshift({symbol:document.getElementById("tradeSymbol").value,broker:document.getElementById("tradeBroker").value,side:tradeSide,qty,price,date:document.getElementById("tradeDate").value,id:Date.now()});
+  const sym=document.getElementById("tradeSymbol").value;
+  const brk=document.getElementById("tradeBroker").value;
+  trades.unshift({symbol:sym,broker:brk,side:tradeSide,qty,price,date:document.getElementById("tradeDate").value,id:Date.now()});
   save("ptf_trd",trades);
+
+  // עדכון פוזיציה אוטומטי
+  const idx=positions.findIndex(p=>p.symbol===sym&&p.broker===brk);
+  if(tradeSide==="buy"){
+    if(idx>=0){
+      const old=positions[idx], nq=old.qty+qty;
+      positions[idx]=Object.assign({},old,{qty:nq,avgPrice:(old.avgPrice*old.qty+price*qty)/nq});
+    } else {
+      positions.push({symbol:sym,broker:brk,qty,avgPrice:price,currency:"USD"});
+    }
+    save("ptf_pos",positions);
+  } else if(tradeSide==="sell" && idx>=0){
+    const newQty=positions[idx].qty-qty;
+    if(newQty<=0) positions.splice(idx,1);
+    else positions[idx]=Object.assign({},positions[idx],{qty:newQty});
+    save("ptf_pos",positions);
+  }
+
   document.getElementById("tradeQty").value="";
   document.getElementById("tradePrice").value="";
   render();
