@@ -301,8 +301,9 @@ async function fetchQuotes() {
   try {
     const rows = text.trim().split("\n").slice(1).map(line => {
       const c = parseCSV(line);
-      const price = parseFloat((c[2]||"").replace(/,/g,""));
-      const prevClose = parseFloat((c[3]||"").replace(/,/g,""));
+      const price    = parseFloat((c[2]||"").replace(/,/g,""));
+      const pc       = parseFloat((c[3]||"").replace(/,/g,""));
+      const prevClose = isNaN(pc) ? null : pc;
       return { symbol:(c[0]||"").trim(), price, prevClose };
     }).filter(r => r.symbol && !isNaN(r.price));
     if (!rows.length) {
